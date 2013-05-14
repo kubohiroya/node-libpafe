@@ -38,6 +38,7 @@ public:
   static void Init(Handle<Object> target){
     Local<FunctionTemplate> t = FunctionTemplate::New(PaFe::New);
     NODE_SET_PROTOTYPE_METHOD(t, "close", PaFe::close);
+    NODE_SET_PROTOTYPE_METHOD(t, "closeFelica", PaFe::closeFelica);
     NODE_SET_PROTOTYPE_METHOD(t, "polling", PaFe::polling);
     NODE_SET_PROTOTYPE_METHOD(t, "readSingle", PaFe::readSingle);
     t->InstanceTemplate()->SetInternalFieldCount(1);
@@ -48,8 +49,6 @@ public:
   }
 
   ~PaFe(){
-    free(_felica);
-    free(_pasori);
   }
 
   static Handle<Value> close(const Arguments & args){
@@ -60,9 +59,20 @@ public:
     }
     PaFe* pafe = ObjectWrap::Unwrap<PaFe>(args.This());
     pasori_close(pafe->_pasori);
+    free(pafe->_pasori);
     return scope.Close(Undefined());
   }
 
+  static Handle<Value> closeFelica(const Arguments & args){
+    HandleScope scope;
+    if (0 != args.Length()){
+      ThrowException(Exception::TypeError(String::New("Wrong number of arguments")));
+      return scope.Close(Undefined());
+    }
+    PaFe* pafe = ObjectWrap::Unwrap<PaFe>(args.This());
+    free(pafe->_felica);
+    return scope.Close(Undefined());
+  }
 
   static Handle<Value> New(const Arguments & args){
     HandleScope scope;
