@@ -72,6 +72,9 @@ public:
 
     PaFe* pafe = new PaFe();
     pasori * _pasori = pasori_open();
+
+    pasori_set_timeout(_pasori, 50);
+
     pafe->_pasori = _pasori;
 
     if (_pasori == NULL) {
@@ -95,7 +98,7 @@ public:
     if (1 < args.Length()){
       timeslot = args[1]->NumberValue();
     }else{
-      timeslot = 100;
+      timeslot = 0;
     }
     if (0 < args.Length()) {
       systemcode = args[0]->NumberValue();
