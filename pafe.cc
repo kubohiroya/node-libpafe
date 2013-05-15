@@ -16,6 +16,7 @@ extern "C"{
 using namespace v8;
 using namespace node;
 
+/*
 void wrap_pointer_cb(char *data, void *hint) {
   //fprintf(stderr, "wrap_pointer_cb\n");
 }
@@ -30,17 +31,19 @@ Handle<Value> WrapPointer(void *ptr) {
   size_t size = 0;
   return WrapPointer(static_cast<char*>(ptr), size);
 }
-
+*/
 
 class PaFe : ObjectWrap {
 public:
 
   static void Init(Handle<Object> target){
     Local<FunctionTemplate> t = FunctionTemplate::New(PaFe::New);
-    NODE_SET_PROTOTYPE_METHOD(t, "close", PaFe::close);
-    NODE_SET_PROTOTYPE_METHOD(t, "closeFelica", PaFe::closeFelica);
-    NODE_SET_PROTOTYPE_METHOD(t, "polling", PaFe::polling);
-    NODE_SET_PROTOTYPE_METHOD(t, "readSingle", PaFe::readSingle);
+    NODE_SET_PROTOTYPE_METHOD(t, "pasori_open", PaFe::_pasori_open);
+    NODE_SET_PROTOTYPE_METHOD(t, "pasori_set_timeout", PaFe::_pasori_set_timeout);
+    NODE_SET_PROTOTYPE_METHOD(t, "pasori_close", PaFe::_pasori_close);
+    NODE_SET_PROTOTYPE_METHOD(t, "felica_close", PaFe::_felica_close);
+    NODE_SET_PROTOTYPE_METHOD(t, "felica_polling", PaFe::_felica_polling);
+    NODE_SET_PROTOTYPE_METHOD(t, "felica_read_single", PaFe::_felica_read_single);
     t->InstanceTemplate()->SetInternalFieldCount(1);
     target->Set(String::New("PaFe"), t->GetFunction());
   }
@@ -51,29 +54,6 @@ public:
   ~PaFe(){
   }
 
-  static Handle<Value> close(const Arguments & args){
-    HandleScope scope;
-    if (0 != args.Length()){
-      ThrowException(Exception::TypeError(String::New("Wrong number of arguments")));
-      return scope.Close(Undefined());
-    }
-    PaFe* pafe = ObjectWrap::Unwrap<PaFe>(args.This());
-    pasori_close(pafe->_pasori);
-    free(pafe->_pasori);
-    return scope.Close(Undefined());
-  }
-
-  static Handle<Value> closeFelica(const Arguments & args){
-    HandleScope scope;
-    if (0 != args.Length()){
-      ThrowException(Exception::TypeError(String::New("Wrong number of arguments")));
-      return scope.Close(Undefined());
-    }
-    PaFe* pafe = ObjectWrap::Unwrap<PaFe>(args.This());
-    free(pafe->_felica);
-    return scope.Close(Undefined());
-  }
-
   static Handle<Value> New(const Arguments & args){
     HandleScope scope;
     if (!args.IsConstructCall()){
@@ -81,9 +61,20 @@ public:
     }
 
     PaFe* pafe = new PaFe();
-    pasori * _pasori = pasori_open();
+    (pafe)->Wrap(args.Holder());
+    return scope.Close(args.Holder());
+  }
 
-    pasori_set_timeout(_pasori, 50);
+  static Handle<Value> _pasori_open(const Arguments & args){
+    HandleScope scope;
+
+    if (0 != args.Length()){
+      ThrowException(Exception::TypeError(String::New("Wrong number of arguments")));
+      return scope.Close(Undefined());
+    }
+
+    PaFe* pafe = ObjectWrap::Unwrap<PaFe>(args.This());
+    pasori * _pasori = pasori_open();
 
     pafe->_pasori = _pasori;
 
@@ -92,11 +83,54 @@ public:
       return scope.Close(Undefined());
     }
 
-    (pafe)->Wrap(args.Holder());
-    return scope.Close(args.Holder());
+    return scope.Close(Undefined());
   }
 
-  static Handle<Value> polling(const Arguments & args){
+  static Handle<Value> _pasori_set_timeout(const Arguments & args){
+    HandleScope scope;
+    int timeout = 0;
+    if (1 != args.Length()){
+      ThrowException(Exception::TypeError(String::New("Wrong number of arguments")));
+      return scope.Close(Undefined());
+    }
+    if (0 < args.Length()){
+      timeout = args[0]->NumberValue();
+    }
+
+    PaFe* pafe = ObjectWrap::Unwrap<PaFe>(args.This());
+    pasori_set_timeout(pafe->_pasori, timeout);
+
+    return scope.Close(Undefined());
+  }
+
+  static Handle<Value> _pasori_close(const Arguments & args){
+    HandleScope scope;
+    if (0 != args.Length()){
+      ThrowException(Exception::TypeError(String::New("Wrong number of arguments")));
+      return scope.Close(Undefined());
+    }
+    PaFe* pafe = ObjectWrap::Unwrap<PaFe>(args.This());
+    pasori_close(pafe->_pasori);
+
+    free(pafe->_pasori);
+
+    return scope.Close(Undefined());
+  }
+
+  static Handle<Value> _felica_close(const Arguments & args){
+    HandleScope scope;
+    if (0 != args.Length()){
+      ThrowException(Exception::TypeError(String::New("Wrong number of arguments")));
+      return scope.Close(Undefined());
+    }
+    PaFe* pafe = ObjectWrap::Unwrap<PaFe>(args.This());
+
+    free(pafe->_felica);
+
+    return scope.Close(Undefined());
+  }
+
+  static Handle<Value> _felica_polling(const Arguments & args){
     HandleScope scope;
     uint8 timeslot;
     uint16 systemcode;
@@ -118,15 +152,15 @@ public:
     felica * _felica = felica_polling(pafe->_pasori, systemcode, 0, timeslot);
 
     if (_felica == NULL) {
-      return scope.Close(Integer::New(-1));
+      return scope.Close(Boolean::New(FALSE));
     }
 
     pafe->_felica = _felica;
 
-    return scope.Close(Integer::New(0));
+    return scope.Close(Boolean::New(TRUE));
   }
 
-  static Handle<Value> readSingle(const Arguments& args) {
+  static Handle<Value> _felica_read_single(const Arguments& args) {
     HandleScope scope;
 
     int servicecode;
