@@ -41,6 +41,8 @@ public:
     Local<FunctionTemplate> t = FunctionTemplate::New(PaFe::New);
     NODE_SET_PROTOTYPE_METHOD(t, "pasori_open", PaFe::_pasori_open);
     NODE_SET_PROTOTYPE_METHOD(t, "pasori_set_timeout", PaFe::_pasori_set_timeout);
+    NODE_SET_PROTOTYPE_METHOD(t, "pasori_init", PaFe::_pasori_init);
+    NODE_SET_PROTOTYPE_METHOD(t, "pasori_reset", PaFe::_pasori_reset);
     NODE_SET_PROTOTYPE_METHOD(t, "pasori_close", PaFe::_pasori_close);
     NODE_SET_PROTOTYPE_METHOD(t, "felica_close", PaFe::_felica_close);
     NODE_SET_PROTOTYPE_METHOD(t, "felica_polling", PaFe::_felica_polling);
@@ -116,6 +118,36 @@ public:
     return scope.Close(Undefined());
   }
 
+  static Handle<Value> _pasori_init(const Arguments & args){
+    HandleScope scope;
+    if (0 != args.Length()){
+      ThrowException(Exception::TypeError(String::New("Wrong number of arguments")));
+      return scope.Close(Undefined());
+    }
+    PaFe* pafe = ObjectWrap::Unwrap<PaFe>(args.This());
+    if(pafe->_pasori == NULL){
+      ThrowException(Exception::TypeError(String::New("Pasori device has not initialized.")));
+      return scope.Close(Undefined());
+    }
+    pasori_init(pafe->_pasori);
+    return scope.Close(Undefined());
+  }
+
+  static Handle<Value> _pasori_reset(const Arguments & args){
+    HandleScope scope;
+    if (0 != args.Length()){
+      ThrowException(Exception::TypeError(String::New("Wrong number of arguments")));
+      return scope.Close(Undefined());
+    }
+    PaFe* pafe = ObjectWrap::Unwrap<PaFe>(args.This());
+    if(pafe->_pasori == NULL){
+      ThrowException(Exception::TypeError(String::New("Pasori device has not initialized.")));
+      return scope.Close(Undefined());
+    }
+    pasori_reset(pafe->_pasori);
+    return scope.Close(Undefined());
+  }
+
   static Handle<Value> _pasori_close(const Arguments & args){
     HandleScope scope;
     if (0 != args.Length()){
@@ -128,9 +160,6 @@ public:
       return scope.Close(Undefined());
     }
     pasori_close(pafe->_pasori);
-
-    free(pafe->_pasori);
-
     return scope.Close(Undefined());
   }
 
