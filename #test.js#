@@ -12,7 +12,6 @@ var timeslot = 500;
 
 pafe.pasori_open();
 pafe.pasori_set_timeout(50);
-
 pafe.felica_polling(FELICA_LITE_SYSTEM_CODE, TIMESLOT);
 
 var data = pafe.felica_read_single(STUDENT_INFO_SERVICE_CODE,

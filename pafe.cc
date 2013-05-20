@@ -1,5 +1,6 @@
 #define BUILDING_NODE_EXTENTION
 
+#define MACOSX
 
 extern "C"{
 #include <libpafe/libpafe.h>
@@ -49,6 +50,8 @@ public:
   }
 
   PaFe(){
+    this->_pasori = NULL;
+    this->_felica = NULL;
   }
 
   ~PaFe(){
@@ -74,14 +77,20 @@ public:
     }
 
     PaFe* pafe = ObjectWrap::Unwrap<PaFe>(args.This());
-    pasori * _pasori = pasori_open();
 
-    pafe->_pasori = _pasori;
+    if(pafe->_pasori != NULL){
+      ThrowException(Exception::TypeError(String::New("Pasori device is already initialized.")));
+      return scope.Close(Undefined());
+    }
+
+    pasori * _pasori = pasori_open();
 
     if (_pasori == NULL) {
       ThrowException(Exception::TypeError(String::New("pasori open error")));
       return scope.Close(Undefined());
     }
+
+    pafe->_pasori = _pasori;
 
     return scope.Close(Undefined());
   }
@@ -98,6 +107,10 @@ public:
     }
 
     PaFe* pafe = ObjectWrap::Unwrap<PaFe>(args.This());
+    if(pafe->_pasori == NULL){
+      ThrowException(Exception::TypeError(String::New("Pasori device has not initialized.")));
+      return scope.Close(Undefined());
+    }
     pasori_set_timeout(pafe->_pasori, timeout);
 
     return scope.Close(Undefined());
@@ -110,6 +123,10 @@ public:
       return scope.Close(Undefined());
     }
     PaFe* pafe = ObjectWrap::Unwrap<PaFe>(args.This());
+    if(pafe->_pasori == NULL){
+      ThrowException(Exception::TypeError(String::New("Pasori device has not initialized.")));
+      return scope.Close(Undefined());
+    }
     pasori_close(pafe->_pasori);
 
     free(pafe->_pasori);
@@ -124,6 +141,11 @@ public:
       return scope.Close(Undefined());
     }
     PaFe* pafe = ObjectWrap::Unwrap<PaFe>(args.This());
+
+    if(pafe->_felica == NULL){
+      ThrowException(Exception::TypeError(String::New("felica has not initialized.")));
+      return scope.Close(Undefined());
+    }
 
     free(pafe->_felica);
 
@@ -149,6 +171,12 @@ public:
     }
 
     PaFe* pafe = ObjectWrap::Unwrap<PaFe>(args.This());
+
+    if(pafe->_pasori == NULL){
+      ThrowException(Exception::TypeError(String::New("Pasori device has not initialized.")));
+      return scope.Close(Undefined());
+    }
+
     felica * _felica = felica_polling(pafe->_pasori, systemcode, 0, timeslot);
 
     if (_felica == NULL) {
@@ -189,9 +217,18 @@ public:
       servicecode = 0;
     }
 
-    PaFe* obj = ObjectWrap::Unwrap<PaFe>(args.This());
+    PaFe* pafe = ObjectWrap::Unwrap<PaFe>(args.This());
 
-    int ret = felica_read_single(obj->_felica, servicecode, mode, addr, data);
+    if(pafe->_pasori == NULL){
+      ThrowException(Exception::TypeError(String::New("Pasori device has not initialized.")));
+      return scope.Close(Undefined());
+    }
+    if(pafe->_felica == NULL){
+      ThrowException(Exception::TypeError(String::New("felica has not initialized.")));
+      return scope.Close(Undefined());
+    }
+
+    int ret = felica_read_single(pafe->_felica, servicecode, mode, addr, data);
     if(ret == 0){
       std::string str(data, data+datalen);
       return scope.Close(String::New(str.c_str (), str.length()));
