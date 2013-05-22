@@ -47,6 +47,8 @@ public:
     NODE_SET_PROTOTYPE_METHOD(t, "felica_close", PaFe::_felica_close);
     NODE_SET_PROTOTYPE_METHOD(t, "felica_polling", PaFe::_felica_polling);
     NODE_SET_PROTOTYPE_METHOD(t, "felica_read_single", PaFe::_felica_read_single);
+    NODE_SET_PROTOTYPE_METHOD(t, "felica_get_idm", PaFe::_felica_get_idm);
+    NODE_SET_PROTOTYPE_METHOD(t, "felica_get_pmm", PaFe::_felica_get_pmm);
     t->InstanceTemplate()->SetInternalFieldCount(1);
     target->Set(String::New("PaFe"), t->GetFunction());
   }
@@ -261,6 +263,73 @@ public:
     if(ret == 0){
       std::string str(data, data+datalen);
       return scope.Close(String::New(str.c_str (), str.length()));
+    }else{
+      return scope.Close(Undefined());
+    }
+  }
+
+  static Handle<Value> _felica_get_idm(const Arguments& args) {
+    HandleScope scope;
+
+    uint8 idm[8];
+
+    if (args.Length() != 0){
+      ThrowException(Exception::TypeError(String::New("Wrong number of arguments")));
+      return scope.Close(Undefined());
+    }
+
+    PaFe* pafe = ObjectWrap::Unwrap<PaFe>(args.This());
+
+    if(pafe->_pasori == NULL){
+      ThrowException(Exception::TypeError(String::New("Pasori device has not initialized.")));
+      return scope.Close(Undefined());
+    }
+    if(pafe->_felica == NULL){
+      ThrowException(Exception::TypeError(String::New("felica has not initialized.")));
+      return scope.Close(Undefined());
+    }
+
+    int ret = felica_get_idm(pafe->_felica, idm);
+
+    if(ret == 0){
+      Local<Array> result = Array::New(8);
+      for(int i = 0; i < 8; i++){
+        result->Set(Number::New(i), Number::New(idm[i]));
+      }
+      return scope.Close(result);
+    }else{
+      return scope.Close(Undefined());
+    }
+  }
+
+  static Handle<Value> _felica_get_pmm(const Arguments& args) {
+    HandleScope scope;
+
+    uint8 pmm[8];
+
+    if (args.Length() != 0){
+      ThrowException(Exception::TypeError(String::New("Wrong number of arguments")));
+      return scope.Close(Undefined());
+    }
+
+    PaFe* pafe = ObjectWrap::Unwrap<PaFe>(args.This());
+
+    if(pafe->_pasori == NULL){
+      ThrowException(Exception::TypeError(String::New("Pasori device has not initialized.")));
+      return scope.Close(Undefined());
+    }
+    if(pafe->_felica == NULL){
+      ThrowException(Exception::TypeError(String::New("felica has not initialized.")));
+      return scope.Close(Undefined());
+    }
+
+    int ret = felica_get_pmm(pafe->_felica, pmm);
+    if(ret == 0){
+      Local<Array> result = Array::New(8);
+      for(int i = 0; i < 8; i++){
+        result->Set(Number::New(i), Number::New(pmm[i]));
+      }
+      return scope.Close(result);
     }else{
       return scope.Close(Undefined());
     }
