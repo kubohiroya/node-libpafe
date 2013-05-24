@@ -1,0 +1,17 @@
+{
+  "author": "Hiroya Kubo <hiroya@cuc.ac.jp>",
+  "name": "node-libpafe",
+  "description": "libpafe wrapper addon",
+  "version": "0.0.0",
+  "homepage": "https://github.com/kubohiroya/node-libpafe",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/kubohiroya/node-libpafe.git"
+  },
+  "engines": {
+    "node": "~0.6.6"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {}
+}

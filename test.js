@@ -13,12 +13,14 @@ var timeslot = 0;
 hex_dump = function(ary){
     var ret = '';
     for(var i = 0; i<ary.length; i++){
-        ret += String.fromCharCode(ary[i])
+        //ret += String.fromCharCode(ary[i])
+        ret += ary[i].toString(16)+" ";
     }
     return ret;
 }
 
 pafe.pasori_open();
+pafe.pasori_set_timeout(1000);
 
 pafe.felica_polling(FELICA_LITE_SYSTEM_CODE, TIMESLOT);
 
