@@ -1,6 +1,5 @@
 #define BUILDING_NODE_EXTENTION
 
-#include "pasoriManager.h"
 #include "pasori.h"
 
 using namespace v8;

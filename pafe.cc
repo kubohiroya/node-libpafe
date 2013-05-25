@@ -44,7 +44,23 @@ Handle<Value> OpenPasoriMulti(const Arguments & args){
     return scope.Close(Undefined());
   }
 
-  return scope.Close(Undefined());
+  if(_pasori_devices->error_code != 0){
+    ThrowException(Exception::TypeError(String::New("pasori init error")));
+    return scope.Close(Undefined());
+  }
+
+  Local<Array> array = Array::New(_pasori_devices->num_devices);
+  for (unsigned int i = 0; i < array->Length(); ++i) {
+
+    Handle<Value> argv[0] = { };
+    Local<Object> pasoriInstance = Pasori::constructor->NewInstance(0, argv);
+    Pasori* pasoriObject = ObjectWrap::Unwrap<Pasori>(pasoriInstance);
+    pasoriObject->_pasori = _pasori_devices->pasori_devices[i];
+
+    array->Set(v8::Int32::New(i), pasoriInstance);
+  }
+  
+  return scope.Close(array);
 }
 
 void InitAll(Handle<Object> exports) {

@@ -15,21 +15,24 @@ hex_dump = function(ary){
     return ret;
 }
 
-var pasori = pafe.open_pasori();
+var pasoriArray = pafe.open_pasori_multi();
 
-if(pasori){
+if(!pasoriArray){
+    console.log("fail to open pasori.");
+}
+
+for(var i = 0; i < pasoriArray.length; i++){
+    var pasori = pasoriArray[i];
     pasori.set_timeout(1000);
     var felica = pasori.polling(FELICA_LITE_SYSTEM_CODE, TIMESLOT);
     if(felica){
         var idm = felica.get_idm();
-        console.log(hex_dump(idm));
+        console.log("["+i+"] "+ hex_dump(idm));
         felica.close();
     }else{
         console.log("polling timeout.");
     }
     pasori.close();
-}else{
-    console.log("fail to open pasori.");
 }
 
 //pasoriManager.close();
