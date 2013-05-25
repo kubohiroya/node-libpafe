@@ -2,7 +2,7 @@
   "targets": [
     {
       "target_name": "pafe"
-     , "sources": [ "pasoriFactory.cc", "pasori.cc", "felica.cc"]
+     , "sources": [ "pasoriManager.cc", "pasori.cc", "felica.cc"]
      , "include_dirs":["/usr/local/include/libpafe"]
 
      , "link_settings":{

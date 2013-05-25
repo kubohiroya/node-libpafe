@@ -1,4 +1,7 @@
-var pafe = new require('./build/Release/pafe').PaFe();
+
+console.log(1);
+var pasoriManager = new require('./build/Release/pafe').PasoriManager();
+console.log(2);
 
 var FELICA_LITE_SYSTEM_CODE = 0x88B4;
 var TIMESLOT = 0;
@@ -19,14 +22,16 @@ hex_dump = function(ary){
     return ret;
 }
 
-pafe.pasori_open();
-pafe.pasori_set_timeout(1000);
+var pasori = pasoriManager.open();
 
-pafe.felica_polling(FELICA_LITE_SYSTEM_CODE, TIMESLOT);
+pasori.set_timeout(1000);
 
-var idm = pafe.felica_get_idm();
+var felica = pasori.polling(FELICA_LITE_SYSTEM_CODE, TIMESLOT);
+
+var idm = felica.get_idm();
+
 console.log(hex_dump(idm));
 
-pafe.felica_close();
-pafe.pasori_close();
-
+felica.close();
+pasori.close();
+//pasoriManager.close();
