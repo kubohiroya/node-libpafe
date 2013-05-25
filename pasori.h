@@ -12,6 +12,7 @@ extern "C"{
 #include <string>
 #include <stdio.h>
 
+#include "felica.h"
 
 using namespace v8;
 using namespace node;
