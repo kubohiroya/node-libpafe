@@ -1,23 +1,12 @@
 #define BUILDING_NODE_EXTENTION
 
-#define MACOSX
-
+#include "pasoriManager.h"
 #include "pasori.h"
 
 using namespace v8;
 using namespace node;
 
-void Pasori::Init(Handle<Object> target){
-  Local<FunctionTemplate> t = FunctionTemplate::New(Pasori::New);
-  NODE_SET_PROTOTYPE_METHOD(t, "open", Pasori::_open);
-  NODE_SET_PROTOTYPE_METHOD(t, "set_timeout", Pasori::_set_timeout);
-  NODE_SET_PROTOTYPE_METHOD(t, "init", Pasori::_init);
-  NODE_SET_PROTOTYPE_METHOD(t, "reset", Pasori::_reset);
-  NODE_SET_PROTOTYPE_METHOD(t, "close", Pasori::_close);
-  NODE_SET_PROTOTYPE_METHOD(t, "polling", Pasori::_polling);
-  t->InstanceTemplate()->SetInternalFieldCount(1);
-  target->Set(String::New("Pasori"), t->GetFunction());
-}
+Persistent<Function> Pasori::constructor;
 
 Pasori::Pasori(){
   this->_pasori = NULL;
@@ -26,6 +15,36 @@ Pasori::Pasori(){
 Pasori::~Pasori(){
 }
   
+
+void Pasori::Init(){
+ 
+  Local<FunctionTemplate> tpl = FunctionTemplate::New(Pasori::New);
+  tpl->SetClassName(String::NewSymbol("Pasori"));
+  tpl->InstanceTemplate()->SetInternalFieldCount(1);
+
+  NODE_SET_PROTOTYPE_METHOD(tpl, "open", Pasori::_open);
+  NODE_SET_PROTOTYPE_METHOD(tpl, "set_timeout", Pasori::_set_timeout);
+  NODE_SET_PROTOTYPE_METHOD(tpl, "init", Pasori::_init);
+  NODE_SET_PROTOTYPE_METHOD(tpl, "reset", Pasori::_reset);
+  NODE_SET_PROTOTYPE_METHOD(tpl, "close", Pasori::_close);
+  NODE_SET_PROTOTYPE_METHOD(tpl, "polling", Pasori::_polling);
+
+  constructor = Persistent<Function>::New(tpl->GetFunction());
+}
+
+Handle<Value> Pasori::New(const Arguments & args){
+  HandleScope scope;
+  Pasori* pasoriObject = new Pasori();
+  (pasoriObject)->Wrap(args.This());
+  return args.This();
+}
+
+Handle<Value> Pasori::NewInstance(const Arguments & args){
+  HandleScope scope;
+  Handle<Value> argv[1] = {args[0]};
+  Local<Object> instance = constructor->NewInstance(1, argv);
+  return scope.Close(instance);
+}
 
 Handle<Value> Pasori::_open(const Arguments & args){
   HandleScope scope;
@@ -67,7 +86,7 @@ Handle<Value> Pasori::_set_timeout(const Arguments & args){
 
   Pasori* pasoriInstance = ObjectWrap::Unwrap<Pasori>(args.This());
   if(pasoriInstance->_pasori == NULL){
-    ThrowException(Exception::TypeError(String::New("Pasori device has not initialized.")));
+    ThrowException(Exception::TypeError(String::New("Pasori device has not initialized: timeout")));
     return scope.Close(Undefined());
   }
   pasori_set_timeout(pasoriInstance->_pasori, timeout);
@@ -145,36 +164,16 @@ Handle<Value> Pasori::_polling(const Arguments & args){
     return scope.Close(Undefined());
   }
 
-  felica * _felica = felica_polling(pasoriInstance->_pasori, systemcode, 0, timeslot);
-    
+  felica* _felica = felica_polling(pasoriInstance->_pasori, systemcode, 0, timeslot);
+
   if (_felica == NULL) {
     return scope.Close(Undefined());
   }
 
+  Handle<Value> argv[0] = { };
+  Local<Object> felicaInstance = Felica::constructor->NewInstance(0, argv);
+  Felica* felicaObject = ObjectWrap::Unwrap<Felica>(felicaInstance);
+  felicaObject->_felica = _felica;
+  return scope.Close(felicaInstance);
 
-  Handle<Value> felicaInstance = Felica::NewInstance(args);
-  Felica* felicaObject = ObjectWrap::Unwrap<Felica>(args.This());
-  felicaObject->setFelica(_felica);
-  return felicaInstance;
-  /*
-    Felica* felicaObject = new Felica();
-    (felicaObject)->WrapObject(args.Holder());
-    return scope.Close(args.Holder());
-    //
-    */
 }
-
-
-Handle<Value> Pasori::New(const Arguments & args){
-  HandleScope scope;
-  if (!args.IsConstructCall()){
-    return args.Callee()->NewInstance();
-  }
-
-  Pasori* pasoriObject = new Pasori();
-  (pasoriObject)->Wrap(args.Holder());
-  return scope.Close(args.Holder());
-}
-
-
-

@@ -19,10 +19,13 @@ using namespace node;
 
 class Pasori : ObjectWrap {
 public:
-  static void Init(Handle<Object> target);
+  static void Init();
 
   Pasori();
   ~Pasori();
+
+  static Persistent<Function> constructor;
+  static Handle<Value> NewInstance(const Arguments& args);
 
   static Handle<Value> _open(const Arguments & args);
 
@@ -36,12 +39,11 @@ public:
 
   static Handle<Value> _polling(const Arguments & args);
 
+  pasori * _pasori;
 
 private:
-
   static Handle<Value> New(const Arguments& args);
 
-  pasori * _pasori;
 };
 
 

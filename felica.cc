@@ -1,21 +1,11 @@
 #define BUILDING_NODE_EXTENTION
 
-#define MACOSX
-
 #include "felica.h"
 
 using namespace v8;
 using namespace node;
 
-void Felica::Init(Handle<Object> target){
-  Local<FunctionTemplate> t = FunctionTemplate::New(Felica::New);
-  NODE_SET_PROTOTYPE_METHOD(t, "close", Felica::_close);
-  NODE_SET_PROTOTYPE_METHOD(t, "read_single", Felica::_read_single);
-  NODE_SET_PROTOTYPE_METHOD(t, "get_idm", Felica::_get_idm);
-  NODE_SET_PROTOTYPE_METHOD(t, "get_pmm", Felica::_get_pmm);
-  t->InstanceTemplate()->SetInternalFieldCount(1);
-  target->Set(String::New("Felica"), t->GetFunction());
-}
+Persistent<Function> Felica::constructor;
 
 Felica::Felica(){
   this->_felica = NULL;
@@ -23,11 +13,17 @@ Felica::Felica(){
 
 Felica::~Felica(){
 }
-  
-void Felica::setFelica(felica *__felica){
-  if(__felica != NULL){
-    this->_felica = __felica;
-  }
+
+void Felica::Init(){
+  Local<FunctionTemplate> tpl = FunctionTemplate::New(Felica::New);
+  tpl->SetClassName(String::NewSymbol("Felica"));
+  tpl->InstanceTemplate()->SetInternalFieldCount(1);
+
+  NODE_SET_PROTOTYPE_METHOD(tpl, "close", Felica::_close);
+  NODE_SET_PROTOTYPE_METHOD(tpl, "read_single", Felica::_read_single);
+  NODE_SET_PROTOTYPE_METHOD(tpl, "get_idm", Felica::_get_idm);
+  NODE_SET_PROTOTYPE_METHOD(tpl, "get_pmm", Felica::_get_pmm);
+  constructor = Persistent<Function>::New(tpl->GetFunction());
 }
 
 Handle<Value> Felica::NewInstance(const Arguments & args){
@@ -163,10 +159,8 @@ Handle<Value> Felica::_get_pmm(const Arguments& args) {
 
 Handle<Value> Felica::New(const Arguments& args) {
   HandleScope scope;
-
-  Felica* obj = new Felica();
-  obj->Wrap(args.This());
-
+  Felica* felicaObject = new Felica();
+  felicaObject->Wrap(args.This());
   return args.This();
 }
 

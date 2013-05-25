@@ -12,28 +12,26 @@ extern "C"{
 #include <string>
 #include <stdio.h>
 
-#include "pasori.h"
-
 using namespace v8;
 using namespace node;
 
 class Felica : ObjectWrap {
 public:
-  static void Init(Handle<Object> target);
+  static void Init();
   Felica();
   ~Felica();
-  
-  void setFelica(felica *felica);
+  static Persistent<Function> constructor;
   static Handle<Value> NewInstance(const Arguments & args);
+
   static Handle<Value> _close(const Arguments & args);
   static Handle<Value> _read_single(const Arguments& args);
   static Handle<Value> _get_idm(const Arguments& args);
   static Handle<Value> _get_pmm(const Arguments& args);
-  static Handle<Value> New(const Arguments& args);
-
-private:
 
   felica * _felica;
+
+private:
+  static Handle<Value> New(const Arguments& args);
 };
 
 #endif
