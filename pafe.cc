@@ -55,9 +55,9 @@ Handle<Value> OpenPasoriMulti(const Arguments & args){
     Handle<Value> argv[0] = { };
     Local<Object> pasoriInstance = Pasori::constructor->NewInstance(0, argv);
     Pasori* pasoriObject = ObjectWrap::Unwrap<Pasori>(pasoriInstance);
-    pasoriObject->_pasori = _pasori_devices->pasori_devices[i];
+    pasoriObject->_pasori = _pasori_devices->pasoris[i];
 
-    array->Set(v8::Int32::New(i), pasoriInstance);
+    array->Set(Int32::New(i), pasoriInstance);
   }
   
   return scope.Close(array);
