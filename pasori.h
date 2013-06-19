@@ -39,6 +39,8 @@ public:
 
   static Handle<Value> _polling(const Arguments & args);
 
+  static Handle<Value> _get_error_code(const Arguments & args);
+
   pasori * _pasori;
 
 private:

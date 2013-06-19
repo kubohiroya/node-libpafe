@@ -27,6 +27,7 @@ void Pasori::Init(){
   NODE_SET_PROTOTYPE_METHOD(tpl, "reset", Pasori::_reset);
   NODE_SET_PROTOTYPE_METHOD(tpl, "close", Pasori::_close);
   NODE_SET_PROTOTYPE_METHOD(tpl, "polling", Pasori::_polling);
+  NODE_SET_PROTOTYPE_METHOD(tpl, "get_error_code", Pasori::_get_error_code);
 
   constructor = Persistent<Function>::New(tpl->GetFunction());
 }
@@ -166,6 +167,7 @@ Handle<Value> Pasori::_polling(const Arguments & args){
   felica* _felica = felica_polling(pasoriInstance->_pasori, systemcode, 0, timeslot);
 
   if (_felica == NULL) {
+    ThrowException(Exception::TypeError(String::New("FeliCa Polling error")));
     return scope.Close(Undefined());
   }
 
@@ -174,5 +176,26 @@ Handle<Value> Pasori::_polling(const Arguments & args){
   Felica* felicaObject = ObjectWrap::Unwrap<Felica>(felicaInstance);
   felicaObject->_felica = _felica;
   return scope.Close(felicaInstance);
+
+}
+
+Handle<Value> Pasori::_get_error_code(const Arguments & args){
+  HandleScope scope;
+
+  if (0 != args.Length()){
+    ThrowException(Exception::TypeError(String::New("Wrong number of arguments")));
+    return scope.Close(Undefined());
+  }
+
+  Pasori* pasoriInstance = ObjectWrap::Unwrap<Pasori>(args.This());
+
+  if(pasoriInstance->_pasori == NULL){
+    ThrowException(Exception::TypeError(String::New("Pasori device has not initialized.")));
+    return scope.Close(Undefined());
+  }
+
+  int error_code = pasori_get_error_code(pasoriInstance->_pasori);
+  Local<Number> result = Number::New(error_code);
+  return scope.Close(result);
 
 }
