@@ -22,7 +22,7 @@
                           'defines':['HAVE_FELICALIB'],
                           'sources': [ 'pafe.cc', 'pasori.cc', 'felica.cc', 'deps/win/felicalib/felicalib.c', 'deps/win/pasori_open_multi.c'],
                           'include_dirs':['<(module_root_dir)/deps/win/felicalib', '<(module_root_dir)/deps/win/include'],
-                          'cflags': ['-EHsc']
+                          'cflags': ['/EHsc']
                           }
             ]
      ]
