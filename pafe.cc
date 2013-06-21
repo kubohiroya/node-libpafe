@@ -5,6 +5,7 @@
 #include "pasori.h"
 #include "felica.h"
 
+
 using namespace v8;
 
 Handle<Value> OpenPasoriSingle(const Arguments & args){
