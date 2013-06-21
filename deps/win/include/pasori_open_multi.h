@@ -1,6 +1,9 @@
 #ifndef _PASORI_OPEN_MULTI_H
 #define _PASORI_OPEN_MULTI_H
 
+#include <windows.h>
+#include "felicalib.h"
+
 typedef struct tag_pasori_devices
 {
   pasori **pasoris;
