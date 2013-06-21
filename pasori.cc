@@ -202,8 +202,8 @@ Handle<Value> Pasori::_polling(const Arguments & args){
     return scope.Close(Undefined());
   }
 
-  Handle<Value> argv[0] = { };
-  Local<Object> felicaInstance = Felica::constructor->NewInstance(0, argv);
+  //Handle<Value> argv[0] = { };
+  Local<Object> felicaInstance = Felica::constructor->NewInstance(0, NULL);
   Felica* felicaObject = ObjectWrap::Unwrap<Felica>(felicaInstance);
   felicaObject->_felica = _felica;
   return scope.Close(felicaInstance);
