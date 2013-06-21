@@ -8,7 +8,7 @@ extern "C"{
 #elif defined(HAVE_FELICALIB)
 extern "C"{
 #include <felicalib.h>
-#include "pasori_devices.h"
+#include "pasori_open_multi.h"
 }
 #else
 #error "unknown platform"
