@@ -16,7 +16,11 @@ Handle<Value> OpenPasoriSingle(const Arguments & args){
     return scope.Close(Undefined());
   }
 
+#if defined HAVE_LIBPAFE
   pasori * _pasori = pasori_open();
+#elif defined HAVE_FELICALIB
+  pasori * _pasori = pasori_open(NULL);
+#endif
 
   if (_pasori == NULL) {
     ThrowException(Exception::TypeError(String::New("pasori open error")));
