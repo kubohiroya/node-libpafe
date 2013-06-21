@@ -1,9 +1,18 @@
 #ifndef FELICA_OBJECT_H
 #define FELICA_OBJECT_H
 
+#if defined(HAVE_LIBPAFE)
 extern "C"{
 #include <libpafe/libpafe.h>
 }
+#elif defined(HAVE_FELICALIB)
+extern "C"{
+#include <felicalib.h>
+}
+#else
+#error "unknown platform"
+#endif
+
 
 #include <node.h>
 #include <node_buffer.h>

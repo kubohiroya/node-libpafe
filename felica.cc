@@ -47,7 +47,11 @@ Handle<Value> Felica::_close(const Arguments & args){
     return scope.Close(Undefined());
   }
 
+#if defined HAVE_LIBPAFE
   free(felica->_felica);
+#elif defined HAVE_FELICALIB
+  felica_free(felica->_felica);
+#endif
 
   return scope.Close(Undefined());
 }
@@ -89,7 +93,12 @@ Handle<Value> Felica::_read_single(const Arguments& args) {
     return scope.Close(Undefined());
   }
 
+#if defined HAVE_LIBPAFE
   int ret = felica_read_single(felica->_felica, servicecode, mode, addr, data);
+#elif defined HAVE_FELICALIB
+  int ret = felica_read_without_encryption02(felica->_felica, servicecode, mode, addr, data);
+#endif
+
   if(ret == 0){
     std::string str(data, data+datalen);
     return scope.Close(String::New(str.c_str (), str.length()));
@@ -115,7 +124,11 @@ Handle<Value> Felica::_get_idm(const Arguments& args) {
     return scope.Close(Undefined());
   }
 
+#if defined HAVE_LIBPAFE
   int ret = felica_get_idm(felica->_felica, idm);
+#elif defined HAVE_FELICALIB
+  int ret = felica_get_idm(felica->_felica, idm);
+#endif
 
   if(ret == 0){
     Local<Array> result = Array::New(8);
@@ -145,7 +158,12 @@ Handle<Value> Felica::_get_pmm(const Arguments& args) {
     return scope.Close(Undefined());
   }
 
+#if defined HAVE_LIBPAFE
   int ret = felica_get_pmm(felica->_felica, pmm);
+#elif defined HAVE_FELICALIB
+  int ret = felica_get_pmm(felica->_felica, pmm);
+#endif
+
   if(ret == 0){
     Local<Array> result = Array::New(8);
     for(int i = 0; i < 8; i++){

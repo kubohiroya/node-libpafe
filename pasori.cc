@@ -61,7 +61,12 @@ Handle<Value> Pasori::_open(const Arguments & args){
     return scope.Close(Undefined());
   }
 
+#if defined HAVE_LIBPAFE
   pasori * __pasori = pasori_open();
+#elif defined HAVE_FELICALIB
+  char *dummy;
+  pasori * __pasori = pasori_open(dummy);
+#endif
 
   if (__pasori == NULL) {
     ThrowException(Exception::TypeError(String::New("pasori open error")));
@@ -89,7 +94,12 @@ Handle<Value> Pasori::_set_timeout(const Arguments & args){
     ThrowException(Exception::TypeError(String::New("Pasori device has not initialized: timeout")));
     return scope.Close(Undefined());
   }
+
+#if defined HAVE_LIBPAFE
   pasori_set_timeout(pasoriInstance->_pasori, timeout);
+#elif defined HAVE_FELICALIB
+  // do nothing
+#endif
 
   return scope.Close(Undefined());
 }
@@ -105,7 +115,13 @@ Handle<Value> Pasori::_init(const Arguments & args){
     ThrowException(Exception::TypeError(String::New("Pasori device has not initialized.")));
     return scope.Close(Undefined());
   }
+
+#if defined HAVE_LIBPAFE
   pasori_init(pasoriInstance->_pasori);
+#elif defined HAVE_FELICALIB
+  pasori_init(pasoriInstance->_pasori);
+#endif
+
   return scope.Close(Undefined());
 }
 
@@ -120,7 +136,13 @@ Handle<Value> Pasori::_reset(const Arguments & args){
     ThrowException(Exception::TypeError(String::New("Pasori device has not initialized.")));
     return scope.Close(Undefined());
   }
+
+#if defined HAVE_LIBPAFE
   pasori_reset(pasoriInstance->_pasori);
+#elif defined HAVE_FELICALIB
+  // do nothing
+#endif
+
   return scope.Close(Undefined());
 }
 
@@ -135,14 +157,20 @@ Handle<Value> Pasori::_close(const Arguments & args){
     ThrowException(Exception::TypeError(String::New("Pasori device has not initialized.")));
     return scope.Close(Undefined());
   }
+
+#if defined HAVE_LIBPAFE
   pasori_close(pasoriInstance->_pasori);
+#elif defined HAVE_FELICALIB
+  pasori_close(pasoriInstance->_pasori);
+#endif
+
   return scope.Close(Undefined());
 }
 
 Handle<Value> Pasori::_polling(const Arguments & args){
   HandleScope scope;
-  uint8 timeslot;
   uint16 systemcode;
+  uint8 timeslot;
 
   if (2 < args.Length() || 0 == args.Length()){
     ThrowException(Exception::TypeError(String::New("Wrong number of arguments")));
@@ -164,7 +192,11 @@ Handle<Value> Pasori::_polling(const Arguments & args){
     return scope.Close(Undefined());
   }
 
+#if defined HAVE_LIBPAFE
   felica* _felica = felica_polling(pasoriInstance->_pasori, systemcode, 0, timeslot);
+#elif defined HAVE_FELICALIB
+  // do nothing
+#endif
 
   if (_felica == NULL) {
     ThrowException(Exception::TypeError(String::New("FeliCa Polling error")));
@@ -194,7 +226,12 @@ Handle<Value> Pasori::_get_error_code(const Arguments & args){
     return scope.Close(Undefined());
   }
 
+#if defined HAVE_LIBPAFE
   int error_code = pasori_get_error_code(pasoriInstance->_pasori);
+#elif defined HAVE_FELICALIB
+  // do nothing
+#endif
+
   Local<Number> result = Number::New(error_code);
   return scope.Close(result);
 
