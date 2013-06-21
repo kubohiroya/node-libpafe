@@ -23,8 +23,8 @@ Handle<Value> OpenPasoriSingle(const Arguments & args){
     return scope.Close(Undefined());
   }
 
-  Handle<Value> argv[0] = { };
-  Local<Object> pasoriInstance = Pasori::constructor->NewInstance(0, argv);
+  //Handle<Value> argv[0] = { };
+  Local<Object> pasoriInstance = Pasori::constructor->NewInstance(0, NULL);
   Pasori* pasoriObject = ObjectWrap::Unwrap<Pasori>(pasoriInstance);
   pasoriObject->_pasori = _pasori;
   return scope.Close(pasoriInstance);
@@ -53,8 +53,7 @@ Handle<Value> OpenPasoriMulti(const Arguments & args){
   Local<Array> array = Array::New(_pasori_devices->num_devices);
   for (unsigned int i = 0; i < array->Length(); ++i) {
 
-    Handle<Value> argv[0] = { };
-    Local<Object> pasoriInstance = Pasori::constructor->NewInstance(0, argv);
+    Local<Object> pasoriInstance = Pasori::constructor->NewInstance(0, NULL);
     Pasori* pasoriObject = ObjectWrap::Unwrap<Pasori>(pasoriInstance);
     pasoriObject->_pasori = _pasori_devices->pasoris[i];
 

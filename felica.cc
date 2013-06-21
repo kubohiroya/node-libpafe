@@ -1,6 +1,7 @@
 #define BUILDING_NODE_EXTENTION
 
 #include "felica.h"
+#define DATA_LEN 16
 
 using namespace v8;
 using namespace node;
@@ -56,15 +57,14 @@ Handle<Value> Felica::_close(const Arguments & args){
   return scope.Close(Undefined());
 }
 
-
 Handle<Value> Felica::_read_single(const Arguments& args) {
   HandleScope scope;
 
   int servicecode;
   int mode;
   uint8 addr;
-  int datalen = 16;
-  uint8 data[datalen];
+  int datalen = DATA_LEN;
+  uint8 data[DATA_LEN];
 
   if (args.Length() < 1 || 3 < args.Length()){
     ThrowException(Exception::TypeError(String::New("Wrong number of arguments")));
@@ -127,7 +127,8 @@ Handle<Value> Felica::_get_idm(const Arguments& args) {
 #if defined HAVE_LIBPAFE
   int ret = felica_get_idm(felica->_felica, idm);
 #elif defined HAVE_FELICALIB
-  int ret = felica_getidm(felica->_felica, idm);
+  int ret = 0;
+  felica_getidm(felica->_felica, idm);
 #endif
 
   if(ret == 0){
@@ -161,7 +162,8 @@ Handle<Value> Felica::_get_pmm(const Arguments& args) {
 #if defined HAVE_LIBPAFE
   int ret = felica_get_pmm(felica->_felica, pmm);
 #elif defined HAVE_FELICALIB
-  int ret = felica_getpmm(felica->_felica, pmm);
+  int ret = 0;
+  felica_getpmm(felica->_felica, pmm);
 #endif
 
   if(ret == 0){
