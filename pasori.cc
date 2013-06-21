@@ -227,11 +227,12 @@ Handle<Value> Pasori::_get_error_code(const Arguments & args){
 
 #if defined HAVE_LIBPAFE
   int error_code = pasori_get_error_code(pasoriInstance->_pasori);
-#elif defined HAVE_FELICALIB
-  // do nothing
-#endif
-
   Local<Number> result = Number::New(error_code);
   return scope.Close(result);
+#elif defined HAVE_FELICALIB
+  return scope.Close(Undefined());
+#endif
+
+
 
 }

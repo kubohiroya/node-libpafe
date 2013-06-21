@@ -127,7 +127,7 @@ Handle<Value> Felica::_get_idm(const Arguments& args) {
 #if defined HAVE_LIBPAFE
   int ret = felica_get_idm(felica->_felica, idm);
 #elif defined HAVE_FELICALIB
-  int ret = felica_get_idm(felica->_felica, idm);
+  int ret = felica_getidm(felica->_felica, idm);
 #endif
 
   if(ret == 0){
@@ -161,7 +161,7 @@ Handle<Value> Felica::_get_pmm(const Arguments& args) {
 #if defined HAVE_LIBPAFE
   int ret = felica_get_pmm(felica->_felica, pmm);
 #elif defined HAVE_FELICALIB
-  int ret = felica_get_pmm(felica->_felica, pmm);
+  int ret = felica_getpmm(felica->_felica, pmm);
 #endif
 
   if(ret == 0){
