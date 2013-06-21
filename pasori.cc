@@ -64,8 +64,7 @@ Handle<Value> Pasori::_open(const Arguments & args){
 #if defined HAVE_LIBPAFE
   pasori * __pasori = pasori_open();
 #elif defined HAVE_FELICALIB
-  char *dummy;
-  pasori * __pasori = pasori_open(dummy);
+  pasori * __pasori = pasori_open(NULL);
 #endif
 
   if (__pasori == NULL) {
@@ -195,7 +194,7 @@ Handle<Value> Pasori::_polling(const Arguments & args){
 #if defined HAVE_LIBPAFE
   felica* _felica = felica_polling(pasoriInstance->_pasori, systemcode, 0, timeslot);
 #elif defined HAVE_FELICALIB
-  // do nothing
+  felica* _felica = felica_polling(pasoriInstance->_pasori, systemcode, 0, timeslot);
 #endif
 
   if (_felica == NULL) {
