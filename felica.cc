@@ -1,5 +1,6 @@
 #define BUILDING_NODE_EXTENTION
 
+#include <node.h>
 #include "felica.h"
 #define DATA_LEN 16
 
