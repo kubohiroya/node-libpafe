@@ -20,10 +20,8 @@
             ],
             ['OS=="win"', {
                           'defines':['HAVE_FELICALIB'],
-                          'sources': [ 'pafe.cc', 'pasori.cc', 'felica.cc'],
-                          'include_dirs':['<(module_root_dir)/deps/felicalib/include'],
-                          'ldflags':['-L<(module_root_dir)/deps/felicalib'],
-                          'libraries':['<(module_root_dir)/deps/felicalib/lib/felicalib.lib']
+                          'sources': [ 'pafe.cc', 'pasori.cc', 'felica.cc', 'deps/felicalib/win/felicalib.c'],
+                          'include_dirs':['<(module_root_dir)/deps/win/felicalib']
                           }
             ]
      ]
