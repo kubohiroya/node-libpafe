@@ -29,6 +29,7 @@ if(!pasoriArray){
 }
 
 for(var i = 0; i < pasoriArray.length; i++){
+	pasoriArray[i].init();
     var pasori = pasoriArray[i];
     pasori.set_timeout(1000);
     var felica = pasori.polling(FELICA_LITE_SYSTEM_CODE, TIMESLOT);
