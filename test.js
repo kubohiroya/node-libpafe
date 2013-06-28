@@ -2,10 +2,17 @@ var pafe = require('./build/Release/pafe');
 
 var FELICA_LITE_SYSTEM_CODE = 0x88B4;
 var TIMESLOT = 0;
-var STUDENT_INFO_SERVICE_CODE = 0x000B;
-var STUDENT_INFO_BLOCK_NUM = 0x8004;
-var STUDENT_INFO_SUBSTRING_BEGIN = 2;
-var STUDENT_INFO_SUBSTRING_END = 9;
+
+var CARDREADER = {
+    SERVICE_CODE : 0x000B,
+    CHECK_ORDER_TEACHER_STUDENT: false,
+    ID_INFO:{
+        BLOCK_NUM : 0x8004,
+        PREFIX : '01',
+        BEGIN_AT : 2,
+        END_AT : 9
+    }
+};
 
 hex_dump = function(ary){
     var ret = '';
@@ -28,6 +35,14 @@ for(var i = 0; i < pasoriArray.length; i++){
     if(felica){
         var idm = felica.get_idm();
         console.log("["+i+"] "+ hex_dump(idm));
+
+
+        var data = felica.read_single(CARDREADER.SERVICE_CODE,
+                                      0,
+                                      CARDREADER.ID_INFO.BLOCK_NUM);
+
+        console.log(hex_dump(data));
+
         felica.close();
     }else{
         console.log("polling timeout.");
