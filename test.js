@@ -1,30 +1,54 @@
-var pafe = new require('./build/Release/pafe').PaFe();
+var pafe = require('./build/Release/pafe');
 
 var FELICA_LITE_SYSTEM_CODE = 0x88B4;
 var TIMESLOT = 0;
 
-var STUDENT_INFO_SERVICE_CODE = 0x000B;
-var STUDENT_INFO_BLOCK_NUM = 0x8004;
-var STUDENT_INFO_SUBSTRING_BEGIN = 2;
-var STUDENT_INFO_SUBSTRING_END = 9;
-
-var timeslot = 0;
+var CARDREADER = {
+    SERVICE_CODE : 0x000B,
+    CHECK_ORDER_TEACHER_STUDENT: false,
+    ID_INFO:{
+        BLOCK_NUM : 0x8004,
+        PREFIX : '01',
+        BEGIN_AT : 2,
+        END_AT : 9
+    }
+};
 
 hex_dump = function(ary){
     var ret = '';
     for(var i = 0; i<ary.length; i++){
-        ret += String.fromCharCode(ary[i])
+        ret += ary[i].toString(16)+" ";
     }
     return ret;
 }
 
-pafe.pasori_open();
+var pasoriArray = pafe.open_pasori_multi();
 
-pafe.felica_polling(FELICA_LITE_SYSTEM_CODE, TIMESLOT);
+if(!pasoriArray){
+    console.log("fail to open pasori.");
+}
 
-var idm = pafe.felica_get_idm();
-console.log(hex_dump(idm));
+for(var i = 0; i < pasoriArray.length; i++){
+	pasoriArray[i].init();
+    var pasori = pasoriArray[i];
+    pasori.set_timeout(1000);
+    var felica = pasori.polling(FELICA_LITE_SYSTEM_CODE, TIMESLOT);
+    if(felica){
+        var idm = felica.get_idm();
+        console.log("["+i+"] "+ hex_dump(idm));
 
-pafe.felica_close();
-pafe.pasori_close();
 
+        var data = felica.read_single(CARDREADER.SERVICE_CODE,
+                                      0,
+                                      CARDREADER.ID_INFO.BLOCK_NUM);
+
+        console.log(hex_dump(data));
+
+        felica.close();
+    }else{
+        console.log("polling timeout.");
+    }
+    pasori.close();
+}
+
+//pasoriManager.close();
