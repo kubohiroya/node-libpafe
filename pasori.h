@@ -3,7 +3,7 @@
 
 #if defined(HAVE_LIBPAFE)
 extern "C"{
-#include <libpafe/libpafe.h>
+#include <libpafe.h>
 }
 #elif defined(HAVE_FELICALIB)
 extern "C"{

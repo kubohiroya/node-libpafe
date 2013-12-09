@@ -12,7 +12,7 @@ pasori_open_multi(void)
 
   pd->pasoris = (pasori **) malloc(sizeof(pasori *) * pd->num_devices);
   
-  pd->pasoris[0] = pasori_open(NULL);
+  pd->pasoris[0] = pasori_open(NULL); // use felicalib 
   
   return pd;
 };
