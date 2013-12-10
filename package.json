@@ -2,7 +2,7 @@
   "author": "Hiroya Kubo <hiroya@cuc.ac.jp>",
   "name": "node-libpafe",
   "description": "libpafe wrapper addon",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "homepage": "https://github.com/kubohiroya/node-libpafe",
   "repository": {
     "type": "git",
@@ -13,5 +13,8 @@
   },
   "dependencies": {
   },
-  "devDependencies": {}
+  "devDependencies": {},
+  "scripts":{
+    "install": "(cd deps/mac_linux/libusb/; ./autogen.sh && ./configure && make); (cd deps/mac_linux/libpafe/; ./configure && make ); node-gyp rebuild"
+  }
 }
