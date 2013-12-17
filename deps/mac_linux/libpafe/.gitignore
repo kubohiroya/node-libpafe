@@ -3,7 +3,6 @@ config.h
 config.log
 config.status
 libtool
-spec
 src/.deps
 stamp-h1
 tests
