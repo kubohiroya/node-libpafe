@@ -13,5 +13,8 @@
   },
   "dependencies": {
   },
-  "devDependencies": {}
+  "devDependencies": {},
+    "scripts":{
+    "preinstall": "(cd node_modules/node-libpafe/deps/mac_linux/libusb/; ./autogen.sh && ./configure && make); (cd node_modules/node-libpafe/deps/mac_linux/libpafe/; ./configure && make ); node-gyp rebuild"
+  }
 }
