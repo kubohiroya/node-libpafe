@@ -4,6 +4,6 @@ config.log
 config.status
 libtool
 src/.deps
+tests/.deps
 stamp-h1
-tests
 srpms
