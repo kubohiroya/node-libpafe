@@ -2,7 +2,6 @@ Makefile
 config.h
 config.log
 config.status
-debian
 libtool
 spec
 src/.deps
