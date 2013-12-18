@@ -11,6 +11,12 @@
                                        '<(module_root_dir)/deps/unix/libusb-1.0.9/libusb',
                                        '<(module_root_dir)/deps/unix/libpafe/src'
                                        ],
+                          'link_settings':{
+                                'libraries':[
+                                        '<(module_root_dir)/deps/unix/libusb-1.0.9/libusb/.libs/libusb-1.0.a',
+                                        '<(module_root_dir)/deps/unix/libpafe/src/.libs/libpafe.a'
+                                        ]
+                                },
                           'ldflags': [ 
                                         '-lusb-1.0',
                                         '-lpafe',
@@ -26,12 +32,12 @@
                                         '<(module_root_dir)/deps/unix/libusb-1.0.9/libusb',
                                         '<(module_root_dir)/deps/unix/libpafe/src'
                                         ],
-                          'ldflags': [ 
-                                        '-lusb-1.0',
-                                        '-lpafe',
-                                        '-L<(module_root_dir)/deps/unix/libusb-1.0.9/libusb/.libs',
-                                        '-L<(module_root_dir)/deps/unix/libpafe/src/.deps'
-                                  ]
+                          'link_settings':{
+                                'libraries':[
+                                        '<(module_root_dir)/deps/unix/libusb-1.0.9/libusb/.libs/libusb-1.0.a',
+                                        '<(module_root_dir)/deps/unix/libpafe/src/.libs/libpafe.a'
+                                        ]
+                                }
 
                           }
             ],
