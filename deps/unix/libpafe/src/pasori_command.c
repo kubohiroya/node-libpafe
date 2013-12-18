@@ -1082,7 +1082,7 @@ pasori_open_multi(void)
 
   num_usb_devices = libusb_get_device_list(ctx, &devs);
 
-  if (num_usb_devices < 0) {
+  if (num_usb_devices == 0) {
     pd->error_code = PASORI_ERR_COM;//throw "There are no USB devices";
     return pd;
   }
