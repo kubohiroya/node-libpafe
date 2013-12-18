@@ -13,7 +13,6 @@ autom4te.cache
 depcomp
 aclocal.m4
 compile
-config.guess
 config.h*
 !msvc/config.h
 config.log
