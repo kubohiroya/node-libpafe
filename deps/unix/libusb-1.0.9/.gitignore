@@ -18,7 +18,6 @@ config.h*
 !msvc/config.h
 config.log
 config.status
-config.sub
 *.swp
 doxygen.cfg
 examples/listdevs
