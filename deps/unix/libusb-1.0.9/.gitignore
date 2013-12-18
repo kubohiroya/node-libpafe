@@ -7,7 +7,6 @@ Makefile.in
 *.o
 libtool
 ltmain.sh
-missing
 stamp-h1
 m4/
 autom4te.cache
