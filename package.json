@@ -9,12 +9,12 @@
     "url": "git://github.com/kubohiroya/node-libpafe.git"
   },
   "engines": {
-    "node": "~v0.11.0"
+    "node": "~v0.10.25"
   },
   "dependencies": {
   },
   "devDependencies": {},
     "scripts":{
-    "preinstall": "(cd deps/unix/libusb-1.0.9; ./configure && make); (cd deps/unix/libpafe; ./configure && make ); node-gyp rebuild"
+    "preinstall": "(cd deps/unix/libusbx-1.0.18; ./configure && make); (cd deps/unix/libusb-compat-0.1.5; ./configure && make); (cd deps/unix/libpafe; ./configure  --includedir=$PWD/../libusbx-1.0.18/libusb --libdir=$PWD/../libusbx-1.0.18/libusb/.libs && make ); (cd deps/unix/libnfc-1.7.0; ./make_release.sh && ./configure --includedir=$PWD/../libusb-compat-0.1.5/libusb --libdir=$PWD/../libusb-compat-0.1.5/libusb/.libs); node-gyp rebuild"
   }
 }
