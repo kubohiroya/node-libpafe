@@ -15,6 +15,6 @@
   },
   "devDependencies": {},
     "scripts":{
-    "preinstall": "(cd deps/unix/libusb-1.0.18; ./configure --prefix=/tmp && make install); (cd deps/unix/libusb-compat-0.1.5; ./configure --prefix=/tmp --includedir=/tmp/include --libdir=/tmp/lib && make install); (cd deps/unix/libnfc-1.7.0 ; ./configure --includedir=/tmp/include --libdir=/tmp/lib && make); node-gyp rebuild"
+    "preinstall": "(cd deps/unix/libusb-1.0.18; ./configure --prefix=/tmp && make install && cp /tmp/include/libusb-1.0/libusb.h  /tmp/include); (cd deps/unix/libusb-compat-0.1.5; ./configure --prefix=/tmp --includedir=/tmp/include --libdir=/tmp/lib && make install); (cd deps/unix/libnfc-1.7.0 ; ./configure --includedir=/tmp/include --libdir=/tmp/lib && make); node-gyp rebuild"
   }
 }
