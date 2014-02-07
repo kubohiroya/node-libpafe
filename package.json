@@ -15,6 +15,6 @@
   },
   "devDependencies": {},
     "scripts":{
-    "preinstall": "(cd deps/unix/libusbx-1.0.18; ./configure && make); (cd deps/unix/libusb-compat-0.1.5; ./configure --includedir=$PWD/../libusbx-1.0.18/libusb --libdir=$PWD/../libusbx-1.0.18/libusb/.libs && make); (cd deps/unix/libpafe; ./configure  --includedir=$PWD/../libusbx-1.0.18/libusb --libdir=$PWD/../libusbx-1.0.18/libusb/.libs && make ); (cd deps/unix/libnfc-1.7.0 ; ./configure --includedir=$PWD/../libusb-compat-0.1.5/libusb:$PWD/../libusbx-1.0.18/libusb --libdir=$PWD/../libusb-compat-0.1.5/libusb/.libs:$PWD/../libusbx-1.0.18/libusb/.libs && make); node-gyp rebuild"
+    "preinstall": "(cd deps/unix/libusb-1.0.18; ./configure --prefix=/tmp && make install); (cd deps/unix/libusb-compat-0.1.5; ./configure --prefix=/tmp --includedir=/tmp/include --libdir=/tmp/lib && make install); (cd deps/unix/libpafe; ./configure  --includedir=$PWD/../libusb-1.0.18/libusb --libdir=$PWD/../libusb-1.0.18/libusb/.libs && make ); (cd deps/unix/libnfc-1.7.0 ; ./configure --includedir=/tmp/include --libdir=/tmp/lib && make); node-gyp rebuild"
   }
 }
