@@ -743,7 +743,7 @@ pn53x_decode_firmware_version(struct nfc_device *pnd)
   uint8_t  abtFw[4];
   size_t  szFwLen = sizeof(abtFw);
   int res = 0;
-  if ((res = pn53x_transceive(pnd, abtCmd, sizeof(abtCmd), abtFw, szFwLen, -1)) < 0) {
+  if ((res = pn53x_transceive(pnd, abtCmd, sizeof(abtCmd), abtFw, szFwLen, 100)) < 0) { // timeout value changed from -1 to 100
     return res;
   }
   szFwLen = (size_t) res;
