@@ -7,36 +7,27 @@
             ['OS=="linux"', {
                           'defines':['HAVE_LIBPAFE'],
                           'sources': [ 'pafe.cc', 'pasori.cc', 'felica.cc'],
-                          'include_dirs':[
-                                       '<(module_root_dir)/deps/unix/libusb-1.0.18/libusb',
-                                       '<(module_root_dir)/deps/unix/libusb-compat-0.1.5/libusb',
-                                       '<(module_root_dir)/deps/unix/libnfc-1.7.0/include'
-                                       ],
+                          'include_dirs':['<(module_root_dir)/deps/unix/libpafe/src', '<(module_root_dir)/deps/unix/libusb-1.0.9/libusb'],
                           'link_settings':{
                                 'libraries':[
-                                        '<(module_root_dir)/deps/unix/libusb-1.0.18/libusb/.libs/libusb-1.0.a',
-                                        '<(module_root_dir)/deps/unix/libusb-compat-0.1.5/libusb/.libs/libusb.a',
-                                        '<(module_root_dir)/deps/unix/libnfc-1.7.0/libnfc/.libs/libnfc.a'
+                                        '-lusb-1.0', '-lpafe',
+                                        '-L<(module_root_dir)/deps/unix/libusb-1.0.18/libusb/.libs',
+                                        '-L<(module_root_dir)/deps/unix/libpafe/src/.libs'
                                         ]
-                                }
+                                        }
                           }
             ],
             ['OS=="mac"', {
-                          'defines':['HAVE_LIBNFC'],
+                          'defines':['HAVE_LIBPAFE'],
                           'sources': [ 'pafe.cc', 'pasori.cc', 'felica.cc'],
-                          'include_dirs':[
-                                        '<(module_root_dir)/deps/unix/libusb-1.0.18/libusb',
-                                       '<(module_root_dir)/deps/unix/libusb-compat-0.1.5/libusb',
-                                        '<(module_root_dir)/deps/unix/libnfc-1.7.0/include'
-                                        ],
+                          'include_dirs':['<(module_root_dir)/deps/unix/libpafe/src', '<(module_root_dir)/deps/unix/libusb-1.0.18/libusb'],
                           'link_settings':{
                                 'libraries':[
-                                        '<(module_root_dir)/deps/unix/libusb-1.0.18/libusb/.libs/libusb-1.0.a',
-                                        '<(module_root_dir)/deps/unix/libusb-compat-0.1.5/libusb/.libs/libusb.a',
-                                        '<(module_root_dir)/deps/unix/libnfc-1.7.0/libnfc/.libs/libnfc.a'
+                                        '-lusb-1.0', '-lpafe',
+                                        '-L<(module_root_dir)/deps/unix/libusb-1.0.18/libusb/.libs',
+                                        '-L<(module_root_dir)/deps/unix/libpafe/src/.libs'
                                         ]
-                                }
-
+                                        }
                           }
             ],
             ['OS=="win"', {
