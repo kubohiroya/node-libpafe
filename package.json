@@ -14,5 +14,5 @@
   "dependencies": {
   },
   "devDependencies": {},
-  "preinstall": "(cd deps/unix/libusb-1.0.18; ./configure --prefix=/tmp && make && make install && cp /tmp/include/libusb-1.0/libusb.h  /tmp/include; cp /tmp/lib/libusb.a /tmp/lib/libusb-1.0.a);(cd deps/unix/libpafe; ./configure; make ); node-gyp rebuild"
+  "preinstall": "(cd deps/unix/libusb-1.0.18; ./configure --prefix=/tmp && make install);(cd deps/unix/libpafe; ./configure --prefix=/tmp --includedir=/tmp/include --libdir=/tmp/lib; make install); node-gyp rebuild"
 }

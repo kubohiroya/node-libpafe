@@ -24,8 +24,7 @@
                           'link_settings':{
                                 'libraries':[
                                         '-lusb-1.0', '-lpafe',
-                                        '-L<(module_root_dir)/deps/unix/libusb-1.0.18/libusb/.libs',
-                                        '-L<(module_root_dir)/deps/unix/libpafe/src/.libs'
+                                        '-L</tmp/lib',
                                         ]
                                         }
                           }
