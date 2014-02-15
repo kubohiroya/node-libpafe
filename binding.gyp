@@ -25,6 +25,7 @@
                                 'libraries':[
                                         '-lusb-1.0', '-lpafe',
                                         '-L/tmp/lib',
+                                        '-L<(module_root_dir)/deps/unix/libpafe/src/.libs'
                                         ]
                                         }
                           }
