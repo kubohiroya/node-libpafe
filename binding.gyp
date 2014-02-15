@@ -24,7 +24,7 @@
                           'link_settings':{
                                 'libraries':[
                                         '-lusb-1.0', '-lpafe',
-                                        '-L</tmp/lib',
+                                        '-L/tmp/lib',
                                         ]
                                         }
                           }
