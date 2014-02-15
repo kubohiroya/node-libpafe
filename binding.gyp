@@ -7,7 +7,7 @@
             ['OS=="linux"', {
                           'defines':['HAVE_LIBPAFE'],
                           'sources': [ 'pafe.cc', 'pasori.cc', 'felica.cc'],
-                          'include_dirs':['<(module_root_dir)/deps/unix/libpafe/src', '<(module_root_dir)/deps/unix/libusb-1.0.9/libusb'],
+                          'include_dirs':['<(module_root_dir)/deps/unix/libpafe/src', '<(module_root_dir)/deps/unix/libusb-1.0.18/libusb'],
                           'link_settings':{
                                 'libraries':[
                                         '-lusb-1.0', '-lpafe',
