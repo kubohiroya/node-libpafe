@@ -3,6 +3,8 @@ build
 *.o
 *.lo
 *.la
+.deps
+
 
 
 
