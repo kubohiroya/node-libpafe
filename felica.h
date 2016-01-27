@@ -15,32 +15,31 @@ extern "C"{
 
 
 #include <node.h>
+#include <node_object_wrap.h>
 #include <node_buffer.h>
 #include <v8.h>
 #include <stdlib.h>
 #include <string>
 #include <stdio.h>
 
-using namespace v8;
-using namespace node;
+class Felica : public node::ObjectWrap {
+  public:
+    static void Init(v8::Local<v8::Object> exports);
+    static void NewInstance(const v8::FunctionCallbackInfo<v8::Value>& args, felica* felica);
+    static void _close(const v8::FunctionCallbackInfo<v8::Value>& args);
+    static void _read_single(const v8::FunctionCallbackInfo<v8::Value>& args);
+    static void _get_idm(const v8::FunctionCallbackInfo<v8::Value>& args);
+    static void _get_pmm(const v8::FunctionCallbackInfo<v8::Value>& args);
+    Felica(felica* felica);
 
-class Felica : ObjectWrap {
-public:
-  static void Init();
-  Felica();
-  ~Felica();
-  static Persistent<Function> constructor;
-  static Handle<Value> NewInstance(const Arguments & args);
+  private:
+    ~Felica();
 
-  static Handle<Value> _close(const Arguments & args);
-  static Handle<Value> _read_single(const Arguments& args);
-  static Handle<Value> _get_idm(const Arguments& args);
-  static Handle<Value> _get_pmm(const Arguments& args);
+    static void New(const v8::FunctionCallbackInfo<v8::Value>& args);
 
-  felica * _felica;
+    static v8::Persistent<v8::Function> constructor;
+    felica * _felica;
 
-private:
-  static Handle<Value> New(const Arguments& args);
 };
 
 #endif

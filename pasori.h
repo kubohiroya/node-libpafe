@@ -26,34 +26,33 @@ extern "C"{
 using namespace v8;
 using namespace node;
 
-class Pasori : ObjectWrap {
-public:
-  static void Init();
+class Pasori : public node::ObjectWrap {
+ public:
+  static void Init(v8::Isolate *isolate);
+  static void New(const v8::FunctionCallbackInfo<v8::Value>& args);
+  static void NewInstance(const v8::FunctionCallbackInfo<v8::Value>& args);
 
-  Pasori();
+  static void _open(const v8::FunctionCallbackInfo<v8::Value>& args);
+
+  static void _set_timeout(const v8::FunctionCallbackInfo<v8::Value>& args);
+
+  static void _init(const v8::FunctionCallbackInfo<v8::Value>& args);
+
+  static void _reset(const v8::FunctionCallbackInfo<v8::Value>& args);
+
+  static void _close(const v8::FunctionCallbackInfo<v8::Value>& args);
+
+  static void _polling(const v8::FunctionCallbackInfo<v8::Value>& args);
+
+  static void _get_error_code(const v8::FunctionCallbackInfo<v8::Value>& args);
+
+
+ private:
+  explicit Pasori();
   ~Pasori();
-
-  static Persistent<Function> constructor;
-  static Handle<Value> NewInstance(const Arguments& args);
-
-  static Handle<Value> _open(const Arguments & args);
-
-  static Handle<Value> _set_timeout(const Arguments & args);
-
-  static Handle<Value> _init(const Arguments & args);
-
-  static Handle<Value> _reset(const Arguments & args);
-
-  static Handle<Value> _close(const Arguments & args);
-
-  static Handle<Value> _polling(const Arguments & args);
-
-  static Handle<Value> _get_error_code(const Arguments & args);
-
   pasori * _pasori;
 
-private:
-  static Handle<Value> New(const Arguments& args);
+  static Persistent<Function> constructor;
 
 };
 

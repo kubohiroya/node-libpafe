@@ -16,11 +16,11 @@ Pasori::~Pasori(){
 }
   
 
-void Pasori::Init(){
- 
-  Local<FunctionTemplate> tpl = FunctionTemplate::New(Pasori::New);
-  tpl->SetClassName(String::NewSymbol("Pasori"));
+void Pasori::Init(Isolate *isolate){
+  Local<FunctionTemplate> tpl = FunctionTemplate::New(isolate, Pasori::New);
+  tpl->SetClassName(String::NewFromUtf8(isolate, "Pasori"));
   tpl->InstanceTemplate()->SetInternalFieldCount(1);
+  constructor.Reset(isolate, tpl->GetFunction());
 
   NODE_SET_PROTOTYPE_METHOD(tpl, "open", Pasori::_open);
   NODE_SET_PROTOTYPE_METHOD(tpl, "set_timeout", Pasori::_set_timeout);
@@ -30,36 +30,35 @@ void Pasori::Init(){
   NODE_SET_PROTOTYPE_METHOD(tpl, "polling", Pasori::_polling);
   NODE_SET_PROTOTYPE_METHOD(tpl, "get_error_code", Pasori::_get_error_code);
 
-  constructor = Persistent<Function>::New(tpl->GetFunction());
+  //exports->Set(String::NewFromUtf8(isolate, "Pasori"), tpl->GetFunction());
 }
 
-Handle<Value> Pasori::New(const Arguments & args){
-  HandleScope scope;
+void Pasori::New(const v8::FunctionCallbackInfo<v8::Value> &args){
   Pasori* pasoriObject = new Pasori();
-  (pasoriObject)->Wrap(args.This());
-  return args.This();
+  if (args.IsConstructCall()) {
+    (pasoriObject)->Wrap(args.This());
+    args.GetReturnValue().Set(args.This());
+  }else{
+    Isolate * isolate = args.GetIsolate();
+    const int argc = 0;
+    Local<Value> argv[argc] = {};
+    Local<Function> cons = Local<Function>::New(isolate, constructor);
+    args.GetReturnValue().Set(cons->NewInstance(argc, argv));
+  }
 }
 
-Handle<Value> Pasori::NewInstance(const Arguments & args){
-  HandleScope scope;
-  Handle<Value> argv[1] = {args[0]};
-  Local<Object> instance = constructor->NewInstance(1, argv);
-  return scope.Close(instance);
-}
-
-Handle<Value> Pasori::_open(const Arguments & args){
-  HandleScope scope;
-
+void Pasori::_open(const v8::FunctionCallbackInfo<v8::Value> &args){
+  Isolate * isolate = args.GetIsolate();
   if (0 != args.Length()){
-    ThrowException(Exception::TypeError(String::New("Wrong number of arguments")));
-    return scope.Close(Undefined());
+    isolate->ThrowException(Exception::TypeError(String::NewFromUtf8(isolate, "Wrong number of arguments")));
+    return;
   }
 
   Pasori* pasoriInstance = ObjectWrap::Unwrap<Pasori>(args.This());
 
   if(pasoriInstance->_pasori != NULL){
-    ThrowException(Exception::TypeError(String::New("Pasori device is already initialized.")));
-    return scope.Close(Undefined());
+    isolate->ThrowException(Exception::TypeError(String::NewFromUtf8(isolate, "Pasori device is already initialized.")));
+    return;
   }
 
 #if defined HAVE_LIBPAFE
@@ -69,21 +68,21 @@ Handle<Value> Pasori::_open(const Arguments & args){
 #endif
 
   if (__pasori == NULL) {
-    ThrowException(Exception::TypeError(String::New("pasori open error")));
-    return scope.Close(Undefined());
+    isolate->ThrowException(Exception::TypeError(String::NewFromUtf8(isolate, "pasori open error")));
+    return;
   }
 
   pasoriInstance->_pasori = __pasori;
 
-  return scope.Close(Undefined());
+  return;
 }
 
-Handle<Value> Pasori::_set_timeout(const Arguments & args){
-  HandleScope scope;
+void Pasori::_set_timeout(const v8::FunctionCallbackInfo<v8::Value> &args){
+  Isolate * isolate = args.GetIsolate();
   int timeout = 0;
   if (1 != args.Length()){
-    ThrowException(Exception::TypeError(String::New("Wrong number of arguments")));
-    return scope.Close(Undefined());
+    isolate->ThrowException(Exception::TypeError(String::NewFromUtf8(isolate, "Wrong number of arguments")));
+    return;
   }
   if (0 < args.Length()){
     timeout = args[0]->NumberValue();
@@ -91,8 +90,8 @@ Handle<Value> Pasori::_set_timeout(const Arguments & args){
 
   Pasori* pasoriInstance = ObjectWrap::Unwrap<Pasori>(args.This());
   if(pasoriInstance->_pasori == NULL){
-    ThrowException(Exception::TypeError(String::New("Pasori device has not initialized: timeout")));
-    return scope.Close(Undefined());
+    isolate->ThrowException(Exception::TypeError(String::NewFromUtf8(isolate, "Pasori device has not initialized: timeout")));
+    return;
   }
 
 #if defined HAVE_LIBPAFE
@@ -101,19 +100,19 @@ Handle<Value> Pasori::_set_timeout(const Arguments & args){
   // do nothing
 #endif
 
-  return scope.Close(Undefined());
+  return;
 }
 
-Handle<Value> Pasori::_init(const Arguments & args){
-  HandleScope scope;
+void Pasori::_init(const v8::FunctionCallbackInfo<v8::Value> &args){
+  Isolate * isolate = args.GetIsolate();
   if (0 != args.Length()){
-    ThrowException(Exception::TypeError(String::New("Wrong number of arguments")));
-    return scope.Close(Undefined());
+    isolate->ThrowException(Exception::TypeError(String::NewFromUtf8(isolate, "Wrong number of arguments")));
+    return;
   }
   Pasori* pasoriInstance = ObjectWrap::Unwrap<Pasori>(args.This());
   if(pasoriInstance->_pasori == NULL){
-    ThrowException(Exception::TypeError(String::New("Pasori device has not initialized.")));
-    return scope.Close(Undefined());
+    isolate->ThrowException(Exception::TypeError(String::NewFromUtf8(isolate, "Pasori device has not initialized.")));
+    return;
   }
 
 #if defined HAVE_LIBPAFE
@@ -122,19 +121,19 @@ Handle<Value> Pasori::_init(const Arguments & args){
   pasori_init(pasoriInstance->_pasori);
 #endif
 
-  return scope.Close(Undefined());
+  return;
 }
 
-Handle<Value> Pasori::_reset(const Arguments & args){
-  HandleScope scope;
+void Pasori::_reset(const v8::FunctionCallbackInfo<v8::Value> &args){
+  Isolate * isolate = args.GetIsolate();
   if (0 != args.Length()){
-    ThrowException(Exception::TypeError(String::New("Wrong number of arguments")));
-    return scope.Close(Undefined());
+    isolate->ThrowException(Exception::TypeError(String::NewFromUtf8(isolate, "Wrong number of arguments")));
+    return;
   }
   Pasori* pasoriInstance = ObjectWrap::Unwrap<Pasori>(args.This());
   if(pasoriInstance->_pasori == NULL){
-    ThrowException(Exception::TypeError(String::New("Pasori device has not initialized.")));
-    return scope.Close(Undefined());
+    isolate->ThrowException(Exception::TypeError(String::NewFromUtf8(isolate, "Pasori device has not initialized.")));
+    return;
   }
 
 #if defined HAVE_LIBPAFE
@@ -143,19 +142,19 @@ Handle<Value> Pasori::_reset(const Arguments & args){
   // do nothing
 #endif
 
-  return scope.Close(Undefined());
+  return;
 }
 
-Handle<Value> Pasori::_close(const Arguments & args){
-  HandleScope scope;
+void Pasori::_close(const v8::FunctionCallbackInfo<v8::Value> &args){
+  Isolate * isolate = args.GetIsolate();
   if (0 != args.Length()){
-    ThrowException(Exception::TypeError(String::New("Wrong number of arguments")));
-    return scope.Close(Undefined());
+    isolate->ThrowException(Exception::TypeError(String::NewFromUtf8(isolate, "Wrong number of arguments")));
+    return;
   }
   Pasori* pasoriInstance = ObjectWrap::Unwrap<Pasori>(args.This());
   if(pasoriInstance->_pasori == NULL){
-    ThrowException(Exception::TypeError(String::New("Pasori device has not initialized.")));
-    return scope.Close(Undefined());
+    isolate->ThrowException(Exception::TypeError(String::NewFromUtf8(isolate, "Pasori device has not initialized.")));
+    return;
   }
 
 #if defined HAVE_LIBPAFE
@@ -164,17 +163,16 @@ Handle<Value> Pasori::_close(const Arguments & args){
   pasori_close(pasoriInstance->_pasori);
 #endif
 
-  return scope.Close(Undefined());
+  return;
 }
 
-Handle<Value> Pasori::_polling(const Arguments & args){
-  HandleScope scope;
+void Pasori::_polling(const v8::FunctionCallbackInfo<v8::Value> &args){
   uint16 systemcode;
   uint8 timeslot;
-
+  Isolate * isolate = args.GetIsolate();
   if (2 < args.Length() || 0 == args.Length()){
-    ThrowException(Exception::TypeError(String::New("Wrong number of arguments")));
-    return scope.Close(Undefined());
+    isolate->ThrowException(Exception::TypeError(String::NewFromUtf8(isolate, "Wrong number of arguments")));
+    return;
   }
   if (1 < args.Length()){
     timeslot = args[1]->NumberValue();
@@ -188,8 +186,8 @@ Handle<Value> Pasori::_polling(const Arguments & args){
   Pasori* pasoriInstance = ObjectWrap::Unwrap<Pasori>(args.This());
 
   if(pasoriInstance->_pasori == NULL){
-    ThrowException(Exception::TypeError(String::New("Pasori device has not initialized.")));
-    return scope.Close(Undefined());
+    isolate->ThrowException(Exception::TypeError(String::NewFromUtf8(isolate, "Pasori device has not initialized.")));
+    return;
   }
 
 #if defined HAVE_LIBPAFE
@@ -199,39 +197,34 @@ Handle<Value> Pasori::_polling(const Arguments & args){
 #endif
 
   if (_felica == NULL) {
-    ThrowException(Exception::TypeError(String::New("FeliCa Polling error")));
-    return scope.Close(Undefined());
+    isolate->ThrowException(Exception::TypeError(String::NewFromUtf8(isolate, "FeliCa Polling error")));
+    return;
   }
-
-  //Handle<Value> argv[0] = { };
-  Local<Object> felicaInstance = Felica::constructor->NewInstance(0, NULL);
-  Felica* felicaObject = ObjectWrap::Unwrap<Felica>(felicaInstance);
-  felicaObject->_felica = _felica;
-  return scope.Close(felicaInstance);
-
+  
+  Felica::NewInstance(args, _felica);
+  
 }
 
-Handle<Value> Pasori::_get_error_code(const Arguments & args){
-  HandleScope scope;
-
+void Pasori::_get_error_code(const v8::FunctionCallbackInfo<v8::Value> &args){
+  Isolate * isolate = args.GetIsolate();
   if (0 != args.Length()){
-    ThrowException(Exception::TypeError(String::New("Wrong number of arguments")));
-    return scope.Close(Undefined());
+    isolate->ThrowException(Exception::TypeError(String::NewFromUtf8(isolate, "Wrong number of arguments")));
+    return;
   }
 
   Pasori* pasoriInstance = ObjectWrap::Unwrap<Pasori>(args.This());
 
   if(pasoriInstance->_pasori == NULL){
-    ThrowException(Exception::TypeError(String::New("Pasori device has not initialized.")));
-    return scope.Close(Undefined());
+    isolate->ThrowException(Exception::TypeError(String::NewFromUtf8(isolate, "Pasori device has not initialized.")));
+    return;
   }
 
 #if defined HAVE_LIBPAFE
   int error_code = pasori_get_error_code(pasoriInstance->_pasori);
-  Local<Number> result = Number::New(error_code);
-  return scope.Close(result);
+  Local<Number> result = Number::New(isolate, error_code);
+  return args.GetReturnValue().Set(result);
 #elif defined HAVE_FELICALIB
-  return scope.Close(Undefined());
+  return;
 #endif
 
 

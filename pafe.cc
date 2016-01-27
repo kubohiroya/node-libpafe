@@ -5,75 +5,21 @@
 #include "pasori.h"
 #include "felica.h"
 
-using namespace v8;
-
-Handle<Value> OpenPasoriSingle(const Arguments & args){
-  HandleScope scope;
-
+void OpenPasoriSingle(const v8::FunctionCallbackInfo<v8::Value> & args){
+  Isolate * isolate = args.GetIsolate();
   if (0 != args.Length()){
-    ThrowException(Exception::TypeError(String::New("Wrong number of arguments")));
-    return scope.Close(Undefined());
+    isolate->ThrowException(Exception::TypeError(String::NewFromUtf8(isolate, "Wrong number of arguments")));
+    return;
   }
-
-#if defined HAVE_LIBPAFE
-  pasori * _pasori = pasori_open();
-#elif defined HAVE_FELICALIB
-  pasori * _pasori = pasori_open(NULL);
-#endif
-
-  if (_pasori == NULL) {
-    ThrowException(Exception::TypeError(String::New("pasori open error")));
-    return scope.Close(Undefined());
-  }
-
-  //Handle<Value> argv[0] = { };
-  Local<Object> pasoriInstance = Pasori::constructor->NewInstance(0, NULL);
-  Pasori* pasoriObject = ObjectWrap::Unwrap<Pasori>(pasoriInstance);
-  pasoriObject->_pasori = _pasori;
-  return scope.Close(pasoriInstance);
+  Pasori::NewInstance(args);
 }
 
-Handle<Value> OpenPasoriMulti(const Arguments & args){
-  HandleScope scope;
-
-  if (0 != args.Length()){
-    ThrowException(Exception::TypeError(String::New("Wrong number of arguments")));
-    return scope.Close(Undefined());
-  }
-
-  pasori_devices * _pasori_devices = pasori_open_multi();
-
-  if (_pasori_devices == NULL) {
-    ThrowException(Exception::TypeError(String::New("pasori open error")));
-    return scope.Close(Undefined());
-  }
-
-  if(_pasori_devices->error_code != 0){
-    ThrowException(Exception::TypeError(String::New("pasori init error")));
-    return scope.Close(Undefined());
-  }
-
-  Local<Array> array = Array::New(_pasori_devices->num_devices);
-  for (unsigned int i = 0; i < array->Length(); ++i) {
-
-    Local<Object> pasoriInstance = Pasori::constructor->NewInstance(0, NULL);
-    Pasori* pasoriObject = ObjectWrap::Unwrap<Pasori>(pasoriInstance);
-    pasoriObject->_pasori = _pasori_devices->pasoris[i];
-
-    array->Set(Int32::New(i), pasoriInstance);
-  }
-  
-  return scope.Close(array);
-}
-
-void InitAll(Handle<Object> exports) {
-  Felica::Init();
-  Pasori::Init();
-
-  exports->Set(String::NewSymbol("open_pasori"), 
-               FunctionTemplate::New(OpenPasoriSingle)->GetFunction());
-  exports->Set(String::NewSymbol("open_pasori_multi"), 
-               FunctionTemplate::New(OpenPasoriMulti)->GetFunction());
+void InitAll(Local<Object> exports, Local<Object> module) {
+  Felica::Init(exports);
+  Isolate * isolate = exports->GetIsolate();
+  Pasori::Init(isolate);
+  exports->Set(String::NewFromUtf8(isolate, "open_pasori"), 
+               FunctionTemplate::New(isolate, OpenPasoriSingle)->GetFunction());
 }
 
 NODE_MODULE(pafe, InitAll)
