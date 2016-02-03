@@ -2,12 +2,12 @@
 
 a Node.js addon to access FeliCa with SONY PaSoRi(RC-S310,RC-S320,RC-S330).
 
-This is wrapper library of [libpafe](https://github.com/rfujita/libpafe).
+This is a wrapper library of [libpafe](https://github.com/rfujita/libpafe) on Linux/OS X plathome or [felicalib](http://felicalib.tmurakam.org/) on Windows plathome.
 
 Installation
 ===============
 
-You'll need to install [libpafe](https://github.com/rfujita/libpafe) beforehand.
+You'll need to install [libpafe](https://github.com/rfujita/libpafe) or [felicalib](http://felicalib.tmurakam.org/) beforehand.
 
 Then, just run:
 
