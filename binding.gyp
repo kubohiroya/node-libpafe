@@ -6,34 +6,29 @@
        'conditions':[
             ['OS=="linux"', {
                           'defines':['HAVE_LIBPAFE'],
-                          'sources': [ 'pafe.cc', 'pasori.cc', 'felica.cc'],
-                          'include_dirs':['<(module_root_dir)/deps/unix/libpafe/src', '<(module_root_dir)/deps/unix/libusb-1.0.18/libusb'],
+                          'sources': [ 'pafe_addon.cc', 'pafe.cc'],
+                          'include_dirs':["<!(node -e \"require('nan')\")"],
                           'link_settings':{
                                 'libraries':[
-                                        '-lusb-1.0', '-lpafe',
-                                        '-L<(module_root_dir)/deps/unix/libusb-1.0.18/libusb/.libs',
-                                        '-L<(module_root_dir)/deps/unix/libpafe/src/.libs'
+                                        '-lusb-1.0', '-lpafe'
                                         ]
                                         }
                           }
             ],
             ['OS=="mac"', {
                           'defines':['HAVE_LIBPAFE'],
-                          'sources': [ 'pafe.cc', 'pasori.cc', 'felica.cc'],
-                          'include_dirs':['<(module_root_dir)/deps/unix/libpafe/src', '<(module_root_dir)/deps/unix/libusb-1.0.18/libusb'],
+                          'sources': [ 'pafe_addon.cc', 'pafe.cc'],
+			  'include_dirs':["<!(node -e \"require('nan')\")", "/usr/local/include/libpafe"],
                           'link_settings':{
                                 'libraries':[
                                         '-lusb-1.0', '-lpafe',
-                                        '-L/tmp/lib',
-                                        '-L<(module_root_dir)/deps/unix/libpafe/src/.libs'
                                         ]
                                         }
                           }
             ],
             ['OS=="win"', {
                           'defines':['HAVE_FELICALIB'],
-                          'sources': [
-                                       'pafe.cc', 'pasori.cc', 'felica.cc',
+			  'sources': [ 'pafe_addon.cc', 'pafe.cc',
                                        'deps/win/felicalib/felicalib.c',
                                        'deps/win/pasori_open_multi.c'
                                        ],
