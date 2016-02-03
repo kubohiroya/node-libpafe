@@ -7,7 +7,7 @@ var FELICA = {
     }
 };
 
-var pafe = require('./build/Release/pafe');
+var pafe = require('./index');
 var pasori = new pafe.Pasori();
 pasori.setTimeout(0);
 
