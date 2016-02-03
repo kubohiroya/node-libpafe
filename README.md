@@ -1,6 +1,6 @@
 # node-libpafe
 
-a Node.js addon to access FeliCa using SONY PaSoRi(RC-S310,RC-S320,RC-S330).
+a Node.js addon to access FeliCa with SONY PaSoRi(RC-S310,RC-S320,RC-S330).
 
 This is wrapper library of [libpafe](https://github.com/rfujita/libpafe).
 
