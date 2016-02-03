@@ -6,11 +6,11 @@
 
 using namespace std;
 
-Nan::Persistent<v8::Function> PasoriObject::constructor;
-NAN_MODULE_INIT(PasoriObject::Init) {
+Nan::Persistent<v8::Function> Pasori::constructor;
+NAN_MODULE_INIT(Pasori::Init) {
   Nan::HandleScope scope;
   v8::Local<v8::FunctionTemplate> tpl = Nan::New<v8::FunctionTemplate>(PasoriNew);
-  tpl->SetClassName(Nan::New("PasoriObject").ToLocalChecked());
+  tpl->SetClassName(Nan::New("Pasori").ToLocalChecked());
   tpl->InstanceTemplate()->SetInternalFieldCount(1);
 
   Nan::SetPrototypeMethod(tpl, "close", PasoriClose);
@@ -20,15 +20,15 @@ NAN_MODULE_INIT(PasoriObject::Init) {
   Nan::SetPrototypeMethod(tpl, "polling", PasoriPolling);
 
   constructor.Reset(Nan::GetFunction(tpl).ToLocalChecked());
-  Nan::Set(target, Nan::New("PasoriObject").ToLocalChecked(), Nan::GetFunction(tpl).ToLocalChecked());
+  Nan::Set(target, Nan::New("Pasori").ToLocalChecked(), Nan::GetFunction(tpl).ToLocalChecked());
 }
-PasoriObject::PasoriObject() {
-}
-
-PasoriObject::~PasoriObject() {
+Pasori::Pasori() {
 }
 
-NAN_METHOD(PasoriObject::PasoriNew) {
+Pasori::~Pasori() {
+}
+
+NAN_METHOD(Pasori::PasoriNew) {
   if (info.IsConstructCall()) {
     pasori *_pasori = pasori_open();
     if(_pasori == NULL){
@@ -36,7 +36,7 @@ NAN_METHOD(PasoriObject::PasoriNew) {
       return;
     }
     pasori_init(_pasori);
-    PasoriObject * pasoriObject = new PasoriObject();
+    Pasori * pasoriObject = new Pasori();
     pasoriObject->Wrap(info.This());
     SetPasori(info.This(), _pasori);
     info.GetReturnValue().Set(info.This());
@@ -48,17 +48,17 @@ NAN_METHOD(PasoriObject::PasoriNew) {
   }
 }
 
-pasori* PasoriObject::GetPasori(v8::Handle<v8::Object> object){
+pasori* Pasori::GetPasori(v8::Handle<v8::Object> object){
   return static_cast<pasori *>(v8::Local<v8::External>::Cast(object->GetInternalField(0))->Value());
 }
 
-void PasoriObject::SetPasori(v8::Local<v8::Object> thisPasoriObject, pasori* _pasori){
+void Pasori::SetPasori(v8::Local<v8::Object> thisPasori, pasori* _pasori){
   v8::Isolate *isolate = v8::Isolate::GetCurrent();
   v8::HandleScope scope(isolate);
-  thisPasoriObject->SetInternalField(0, v8::External::New(isolate, _pasori));
+  thisPasori->SetInternalField(0, v8::External::New(isolate, _pasori));
 }
 
-NAN_METHOD(PasoriObject::PasoriClose) {
+NAN_METHOD(Pasori::PasoriClose) {
   pasori *_pasori = GetPasori(info.This());
   if(_pasori == NULL){
     Nan::ThrowError("Pasori device has not been initialized");
@@ -67,7 +67,7 @@ NAN_METHOD(PasoriObject::PasoriClose) {
   }
 }
 
-NAN_METHOD(PasoriObject::PasoriVersion) {
+NAN_METHOD(Pasori::PasoriVersion) {
   pasori *_pasori = GetPasori(info.This());
   if(_pasori == NULL){
     Nan::ThrowError("Pasori device has not been initialized");
@@ -84,7 +84,7 @@ NAN_METHOD(PasoriObject::PasoriVersion) {
   }
 }
 
-NAN_METHOD(PasoriObject::PasoriType) {
+NAN_METHOD(Pasori::PasoriType) {
   pasori *_pasori = GetPasori(info.This());
   if(_pasori == NULL){
     Nan::ThrowError("Pasori device has not been initialized");
@@ -111,7 +111,7 @@ NAN_METHOD(PasoriObject::PasoriType) {
   }
 }
 
-NAN_METHOD(PasoriObject::PasoriSetTimeout) {
+NAN_METHOD(Pasori::PasoriSetTimeout) {
   if(info.Length() != 1 || ! info[0]->IsNumber()){
     Nan::ThrowTypeError("the only first parameter must be a number");
     return;
@@ -145,19 +145,17 @@ public:
   void HandleOKCallback(){
     if(_felica == NULL){
       v8::Local<v8::Value> callbackArgs[] = {      
-	Nan::New("Error: felica == NULL").ToLocalChecked(),
 	Nan::Null()
       };
-      callback->Call(2, callbackArgs);
+      callback->Call(1, callbackArgs);
       return;
     }else{
-      v8::Local<v8::Object> thisFelicaObject = FelicaObject::FelicaNewInstance(_felica);
+      v8::Local<v8::Object> thisFelica = Felica::FelicaNewInstance(_felica);
 
       v8::Local<v8::Value> callbackArgs[] = {   
-	Nan::Null(),
-	thisFelicaObject
+	thisFelica
       };
-      callback->Call(2, callbackArgs);
+      callback->Call(1, callbackArgs);
       return;
     }
   }
@@ -175,7 +173,7 @@ private:
 };
 
 
-NAN_METHOD(PasoriObject::PasoriPolling) {
+NAN_METHOD(Pasori::PasoriPolling) {
   pasori *_pasori = GetPasori(info.This());
   if(_pasori == NULL){
     Nan::ThrowError("Pasori device has not been initialized");
@@ -200,12 +198,12 @@ NAN_METHOD(PasoriObject::PasoriPolling) {
 
 /*******************************************/
 
-Nan::Persistent<v8::Function> FelicaObject::constructor;
+Nan::Persistent<v8::Function> Felica::constructor;
 
-NAN_MODULE_INIT(FelicaObject::Init) {
+NAN_MODULE_INIT(Felica::Init) {
   Nan::HandleScope scope;
   v8::Local<v8::FunctionTemplate> tpl = Nan::New<v8::FunctionTemplate>(FelicaNew);
-  tpl->SetClassName(Nan::New("FelicaObject").ToLocalChecked());
+  tpl->SetClassName(Nan::New("Felica").ToLocalChecked());
   tpl->InstanceTemplate()->SetInternalFieldCount(1);
 
   Nan::SetPrototypeMethod(tpl, "close", FelicaClose);
@@ -214,18 +212,18 @@ NAN_MODULE_INIT(FelicaObject::Init) {
   Nan::SetPrototypeMethod(tpl, "readSingle", FelicaReadSingle);
 
   constructor.Reset(Nan::GetFunction(tpl).ToLocalChecked());
-  Nan::Set(target, Nan::New("FelicaObject").ToLocalChecked(), Nan::GetFunction(tpl).ToLocalChecked());
+  Nan::Set(target, Nan::New("Felica").ToLocalChecked(), Nan::GetFunction(tpl).ToLocalChecked());
 }
 
-FelicaObject::FelicaObject(felica* _felica) {
+Felica::Felica(felica* _felica) {
   this->_felica = _felica;
 }
 
-FelicaObject::~FelicaObject() {
+Felica::~Felica() {
   free(this->_felica);
 }
 
-v8::Local<v8::Object> FelicaObject::FelicaNewInstance(felica * _felica) {
+v8::Local<v8::Object> Felica::FelicaNewInstance(felica * _felica) {
   Nan::EscapableHandleScope scope;
 
   const int argc = 1;
@@ -238,7 +236,7 @@ v8::Local<v8::Object> FelicaObject::FelicaNewInstance(felica * _felica) {
   return scope.Escape(instance);
 }
 
-NAN_METHOD(FelicaObject::FelicaNew) {
+NAN_METHOD(Felica::FelicaNew) {
   if(info.Length() != 1){
     Nan::ThrowTypeError("Argument Error");
     return;
@@ -246,7 +244,7 @@ NAN_METHOD(FelicaObject::FelicaNew) {
     
   if (info.IsConstructCall()) {
     felica* _felica = static_cast<felica*>(info[0].As<v8::External>()->Value());
-    FelicaObject *felicaObject = new FelicaObject(_felica);
+    Felica *felicaObject = new Felica(_felica);
     felicaObject->Wrap(info.This());
     info.GetReturnValue().Set(info.This());
   } else {
@@ -257,8 +255,8 @@ NAN_METHOD(FelicaObject::FelicaNew) {
   }
 }
 
-NAN_METHOD(FelicaObject::FelicaClose) {
-  FelicaObject* felicaObject = ObjectWrap::Unwrap<FelicaObject>(info.This());
+NAN_METHOD(Felica::FelicaClose) {
+  Felica* felicaObject = ObjectWrap::Unwrap<Felica>(info.This());
   felica* _felica = felicaObject->_felica;
   if(_felica == NULL){
     Nan::ThrowError("felica has not been initialized.");
@@ -268,8 +266,8 @@ NAN_METHOD(FelicaObject::FelicaClose) {
   return;
 }
 
-NAN_METHOD(FelicaObject::FelicaGetIDm) {
-  FelicaObject* felicaObject = ObjectWrap::Unwrap<FelicaObject>(info.This());
+NAN_METHOD(Felica::FelicaGetIDm) {
+  Felica* felicaObject = ObjectWrap::Unwrap<Felica>(info.This());
   felica* _felica = felicaObject->_felica;
   if(_felica == NULL){
     Nan::ThrowError("felica has not been initialized");
@@ -292,8 +290,8 @@ NAN_METHOD(FelicaObject::FelicaGetIDm) {
   }
 }
 
-NAN_METHOD(FelicaObject::FelicaGetPMm) {
-  FelicaObject* felicaObject = ObjectWrap::Unwrap<FelicaObject>(info.This());
+NAN_METHOD(Felica::FelicaGetPMm) {
+  Felica* felicaObject = ObjectWrap::Unwrap<Felica>(info.This());
   felica* _felica = felicaObject->_felica;
   if(_felica == NULL){
     Nan::ThrowError("felica has not been initialized");
@@ -316,7 +314,7 @@ NAN_METHOD(FelicaObject::FelicaGetPMm) {
   }
 }
 
-NAN_METHOD(FelicaObject::FelicaReadSingle) {
+NAN_METHOD(Felica::FelicaReadSingle) {
   int servicecode;
   int mode;
   uint8 addr;
@@ -342,7 +340,7 @@ NAN_METHOD(FelicaObject::FelicaReadSingle) {
     servicecode = 0;
   }
 
-  FelicaObject* felicaObject = ObjectWrap::Unwrap<FelicaObject>(info.This());
+  Felica* felicaObject = ObjectWrap::Unwrap<Felica>(info.This());
   felica* _felica = felicaObject->_felica;
   if(_felica == NULL){
     Nan::ThrowError("felica has not been initialized");

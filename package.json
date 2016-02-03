@@ -7,9 +7,10 @@
     "url": "https://github.com/kubohiroya/node-libpafe/issues"
   },
   "dependencies": {},
-  "description": "a Node.js addon to access FeliCa using SONY PaSoRi(RC-S310,RC-S320,RC-S330)\n",
+  "description": "a Node.js addon to access FeliCa using SONY PaSoRi(RC-S310,RC-S320,RC-S330)",
   "devDependencies": {
-    "nan": "^2.2.0"
+      "nan": "^2.2.0"
+      "node-gyp"; "^3.2.1"
   },
   "engines": {
     "node": ">=v4.0.0"
@@ -17,7 +18,7 @@
   "gitHead": "f456b74fd38b428b1c0c72a1e56a891938313b6c",
   "gypfile": true,
   "homepage": "https://github.com/kubohiroya/node-libpafe",
-  "install": "(cd deps/unix/libusb-1.0.18; ./configure --prefix=/tmp && make install);(cd deps/unix/libpafe; ./configure --prefix=/tmp --includedir=/tmp/include --libdir=/tmp/lib; make install); node-gyp rebuild",
+  "install": "node-gyp rebuild",
   "license": "GPL-2.0",
   "name": "node-libpafe",
   "optionalDependencies": {},

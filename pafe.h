@@ -18,13 +18,13 @@ extern "C"{
 #define FELICA_DATA_LEN 16
 
 // Based on https://nodejs.org/api/addons.html#addons_wrapping_c_objects but using NAN
-class PasoriObject : public Nan::ObjectWrap {
+class Pasori : public Nan::ObjectWrap {
  public:
   static NAN_MODULE_INIT(Init);
 
  private:
-  explicit PasoriObject();
-  ~PasoriObject();
+  explicit Pasori();
+  ~Pasori();
   static NAN_METHOD(PasoriNew);
   static NAN_METHOD(PasoriClose);
   static NAN_METHOD(PasoriVersion);
@@ -33,17 +33,17 @@ class PasoriObject : public Nan::ObjectWrap {
   static NAN_METHOD(PasoriPolling);
   static Nan::Persistent<v8::Function> constructor;
   static pasori* GetPasori(v8::Handle<v8::Object> object);
-  static void SetPasori(v8::Local<v8::Object> thisPasoriObject, pasori* _pasori);
+  static void SetPasori(v8::Local<v8::Object> thisPasori, pasori* _pasori);
 };
 
-class FelicaObject : public Nan::ObjectWrap {
+class Felica : public Nan::ObjectWrap {
  public:
   static NAN_MODULE_INIT(Init);
   static v8::Local<v8::Object> FelicaNewInstance(felica *_felica);
   
  private:
-  explicit FelicaObject(felica* _felica);
-  ~FelicaObject();
+  explicit Felica(felica* _felica);
+  ~Felica();
   static felica* GetFelica(v8::Handle<v8::Object> object);
 
   static NAN_METHOD(FelicaNew);
