@@ -33,3 +33,7 @@ Usage
 License
 ===
 GPL-2.0
+
+Author
+===
+* Hiroya Kubo <hiroya@cuc.ac.jp>, Faculty of Global Studies, Chiba University of Commerce, Japan.
