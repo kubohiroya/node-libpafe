@@ -17,7 +17,7 @@ Usage
 ===
 
     var SYSTEM_CODE_FELICA_LITE = 0x88B4;
-    var pafe = require('libpafe');
+    var pafe = require('node-libpafe');
     var pasori = new pafe.Pasori();
       pasori.polling(SYSTEM_CODE_FELICA_LITE, 0,
         function(felica){
