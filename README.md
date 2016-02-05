@@ -7,7 +7,7 @@ This is a wrapper library selectively using one of multiple implementations : [l
 Installation
 ===============
 
-You'll need to install [libpafe](https://github.com/kubohiroya/libpafe) or [felicalib](http://felicalib.tmurakam.org/) beforehand (Note: you should reinstall my forked version of libpafe to support felica_write related functions).
+You'll need to install [libpafe](https://github.com/kubohiroya/libpafe)(Note: You should reinstall [my forked version of libpafe](https://github.com/kubohiroya/libpafe) to support felica_write related functions) or [felicalib](http://felicalib.tmurakam.org/) beforehand.
 
 Then, just run:
 
