@@ -21,7 +21,8 @@
   "homepage": "https://github.com/kubohiroya/node-libpafe",
   "install": "node-gyp rebuild",
   "license": "GPL-2.0",
-  "name": "node-libpafe",
+  "name": "libpafe",
+  "keywords":["FeliCa","PaSoRi","RC-S310","RC-S320","RC-S330"],
   "optionalDependencies": {},
   "readmeFilename": "README.md",
   "repository": {
@@ -31,5 +32,5 @@
   "scripts": {
     "install": "node-gyp rebuild"
   },
-  "version": "0.2.0"
+  "version": "0.2.2"
 }
