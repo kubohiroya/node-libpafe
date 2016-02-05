@@ -51,6 +51,7 @@ class Felica : public Nan::ObjectWrap {
   static NAN_METHOD(FelicaRead);
   static NAN_METHOD(FelicaReadSingle);
   static NAN_METHOD(FelicaWrite);
+  static NAN_METHOD(FelicaWriteSingle);
   static Nan::Persistent<v8::Function> constructor;
   felica* _felica; 
 };
