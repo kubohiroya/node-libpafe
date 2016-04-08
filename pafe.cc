@@ -228,7 +228,6 @@ Felica::Felica(felica* _felica) {
 }
 
 Felica::~Felica() {
-  free(this->_felica);
 }
 
 v8::Local<v8::Object> Felica::FelicaNewInstance(felica * _felica) {
