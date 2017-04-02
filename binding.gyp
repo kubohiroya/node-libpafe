@@ -7,10 +7,10 @@
             ['OS=="linux"', {
                           'defines':['HAVE_LIBPAFE'],
                           'sources': [ 'pafe_addon.cc', 'pafe.cc'],
-                          'include_dirs':["<!(node -e \"require('nan')\")"],
+                          'include_dirs':["<!(node -e \"require('nan')\")", "/usr/local/include/libpafe"],
                           'link_settings':{
                                 'libraries':[
-                                        '-lusb-1.0', '-lpafe'
+ 				        "<!(libusb-config --libs)", '-L/usr/local/lib -lpafe'
                                         ]
                                         }
                           }
@@ -21,7 +21,7 @@
 			  'include_dirs':["<!(node -e \"require('nan')\")", "/usr/local/include/libpafe"],
                           'link_settings':{
                                 'libraries':[
-                                        '-lusb-1.0', '-lpafe',
+ 				        "<!(libusb-config --libs)", '-L/usr/local/lib -lpafe'
                                         ]
                                         }
                           }
