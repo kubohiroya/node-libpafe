@@ -44,7 +44,7 @@ NAN_METHOD(Pasori::PasoriNew) {
     const int argc = 0;
     v8::Local<v8::Value> argv[argc] = {};
     v8::Local<v8::Function> cons = Nan::New(constructor);
-    info.GetReturnValue().Set(cons->NewInstance(argc, argv));
+    info.GetReturnValue().Set(Nan::NewInstance(cons, argc, argv).ToLocalChecked());
   }
 }
 
@@ -238,7 +238,8 @@ v8::Local<v8::Object> Felica::FelicaNewInstance(felica * _felica) {
     Nan::New<v8::External>(_felica)
   };
   v8::Local<v8::Function> cons = Nan::New<v8::Function>(constructor);
-  v8::Local<v8::Object> instance = cons->NewInstance(argc, argv);
+  //v8::Local<v8::Object> instance = cons->NewInstance(argc, argv);
+  v8::Local<v8::Object> instance = Nan::NewInstance(cons, argc, argv).ToLocalChecked();
 
   return scope.Escape(instance);
 }
@@ -258,7 +259,7 @@ NAN_METHOD(Felica::FelicaNew) {
     const int argc = 1;
     v8::Local<v8::Value> argv[argc] = {info[0]};
     v8::Local<v8::Function> cons = Nan::New(constructor);
-    info.GetReturnValue().Set(cons->NewInstance(argc, argv));
+    info.GetReturnValue().Set(Nan::NewInstance(cons, argc, argv).ToLocalChecked());
   }
 }
 
