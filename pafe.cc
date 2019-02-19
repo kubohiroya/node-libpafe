@@ -44,7 +44,7 @@ NAN_METHOD(Pasori::PasoriNew) {
     const int argc = 0;
     v8::Local<v8::Value> argv[argc] = {};
     v8::Local<v8::Function> cons = Nan::New(constructor);
-    info.GetReturnValue().Set(cons->NewInstance(argc, argv));
+    info.GetReturnValue().Set(cons->NewInstance());
   }
 }
 
@@ -271,6 +271,28 @@ NAN_METHOD(Felica::FelicaClose) {
   }
   free(_felica);
   return info.GetReturnValue().SetUndefined();
+}
+
+NAN_METHOD(Felica::FelicaSearchService) {
+  Felica* felicaObject = ObjectWrap::Unwrap<Felica>(info.This());
+  felica* _felica = felicaObject->_felica;
+  if(_felica == NULL){
+    Nan::ThrowError("felica has not been initialized");
+    return info.GetReturnValue().SetUndefined();
+  }
+  
+#if defined HAVE_LIBPAFE
+  int ret = felica_search_service(_felica);
+#elif defined HAVE_FELICALIB
+  int ret = 0;  
+  //felica_enum_service(_felica, idm);
+#endif
+  if(ret == 0){
+    info.GetReturnValue().Set(Nan::New(ret).ToLocalChecked());
+  }else{
+    Nan::ThrowTypeError("internal error on getIDm");
+    return info.GetReturnValue().SetUndefined();
+  }
 }
 
 NAN_METHOD(Felica::FelicaGetIDm) {
