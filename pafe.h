@@ -46,6 +46,7 @@ class Felica : public Nan::ObjectWrap {
   ~Felica();
   static NAN_METHOD(FelicaNew);
   static NAN_METHOD(FelicaClose);
+  static NAN_METHOD(FelicaSearchService);
   static NAN_METHOD(FelicaGetIDm);
   static NAN_METHOD(FelicaGetPMm);
   static NAN_METHOD(FelicaRead);
