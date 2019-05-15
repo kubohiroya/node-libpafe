@@ -32,7 +32,7 @@ class Pasori : public Nan::ObjectWrap {
   static NAN_METHOD(PasoriSetTimeout);
   static NAN_METHOD(PasoriPolling);
   static Nan::Persistent<v8::Function> constructor;
-  static pasori* GetPasori(v8::Handle<v8::Object> object);
+  static pasori* GetPasori(v8::Local<v8::Object> object);
   static void SetPasori(v8::Local<v8::Object> thisPasori, pasori* _pasori);
 };
 
@@ -46,7 +46,6 @@ class Felica : public Nan::ObjectWrap {
   ~Felica();
   static NAN_METHOD(FelicaNew);
   static NAN_METHOD(FelicaClose);
-  static NAN_METHOD(FelicaSearchService);
   static NAN_METHOD(FelicaGetIDm);
   static NAN_METHOD(FelicaGetPMm);
   static NAN_METHOD(FelicaRead);

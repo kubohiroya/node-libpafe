@@ -48,7 +48,7 @@ NAN_METHOD(Pasori::PasoriNew) {
   }
 }
 
-pasori* Pasori::GetPasori(v8::Handle<v8::Object> object){
+pasori* Pasori::GetPasori(v8::Local<v8::Object> object){
   return static_cast<pasori *>(v8::Local<v8::External>::Cast(object->GetInternalField(0))->Value());
 }
 
@@ -120,7 +120,7 @@ NAN_METHOD(Pasori::PasoriSetTimeout) {
     return info.GetReturnValue().SetUndefined();
   }
   pasori *_pasori = GetPasori(info.This());
-  int timeout = info[0]->Int32Value();
+  int timeout = info[0]->Int32Value(Nan::GetCurrentContext()).ToChecked();
   pasori_set_timeout(_pasori, timeout);
   return info.GetReturnValue().SetUndefined();
 }
@@ -130,9 +130,8 @@ public:
   AddAsyncFelicaPollingWorker(pasori* _pasori,
 			      uint16 systemcode,
 			      uint8 timeslot,
-			      const char* resource_name,
 			      Nan::Callback* callback)
-    : Nan::AsyncWorker(callback, resource_name), systemcode(systemcode), timeslot(timeslot){
+    : Nan::AsyncWorker(callback), systemcode(systemcode), timeslot(timeslot){
     this->_felica = NULL;
     this->RFU = 0;
     this->_pasori = _pasori;
@@ -149,23 +148,18 @@ public:
   
   void HandleOKCallback(){
     if(_felica == NULL){
-      int argc = 1;
-      v8::Local<v8::Value> argv[] = {
+      v8::Local<v8::Value> callbackArgs[] = {      
 	Nan::Null()
       };
-      callback->Call(argc, argv);
-      // Nan::AsyncResource* resource = new Nan::AsyncResource(Nan::New<v8::String>("Pasori:polling").ToLocalChecked());
-      // resource->runInAsyncScope(Nan::GetCurrentContext()->Global(), callback, argc, argv);
+      callback->Call(1, callbackArgs);
       return;
     }else{
       v8::Local<v8::Object> thisFelica = Felica::FelicaNewInstance(_felica);
-      int argc = 1;
-      v8::Local<v8::Value> argv[] = {   
+
+      v8::Local<v8::Value> callbackArgs[] = {   
 	thisFelica
       };
-      // Nan::AsyncResource* resource = new Nan::AsyncResource(Nan::New<v8::String>("Pasori:polling").ToLocalChecked());
-      // resource->runInAsyncScope(Nan::GetCurrentContext()->Global(), callback, argc, argv);
-      callback->Call(argc, argv);
+      callback->Call(1, callbackArgs);
       return;
     }
   }
@@ -200,9 +194,8 @@ NAN_METHOD(Pasori::PasoriPolling) {
 
   auto callback = new Nan::Callback(info[2].As<v8::Function>());
   Nan::AsyncQueueWorker(new AddAsyncFelicaPollingWorker(_pasori,
-							info[0]->Int32Value(),
-							info[1]->Int32Value(),
-							"Pasori:pollling",
+							info[0]->Int32Value(Nan::GetCurrentContext()).ToChecked(),
+							info[1]->Int32Value(Nan::GetCurrentContext()).ToChecked(),
 							callback));
   return info.GetReturnValue().SetUndefined();
 }
@@ -245,7 +238,9 @@ v8::Local<v8::Object> Felica::FelicaNewInstance(felica * _felica) {
     Nan::New<v8::External>(_felica)
   };
   v8::Local<v8::Function> cons = Nan::New<v8::Function>(constructor);
+  //v8::Local<v8::Object> instance = cons->NewInstance(argc, argv);
   v8::Local<v8::Object> instance = Nan::NewInstance(cons, argc, argv).ToLocalChecked();
+
   return scope.Escape(instance);
 }
 
@@ -265,7 +260,6 @@ NAN_METHOD(Felica::FelicaNew) {
     v8::Local<v8::Value> argv[argc] = {info[0]};
     v8::Local<v8::Function> cons = Nan::New(constructor);
     info.GetReturnValue().Set(Nan::NewInstance(cons, argc, argv).ToLocalChecked());
-
   }
 }
 
@@ -278,28 +272,6 @@ NAN_METHOD(Felica::FelicaClose) {
   }
   free(_felica);
   return info.GetReturnValue().SetUndefined();
-}
-
-NAN_METHOD(Felica::FelicaSearchService) {
-  Felica* felicaObject = ObjectWrap::Unwrap<Felica>(info.This());
-  felica* _felica = felicaObject->_felica;
-  if(_felica == NULL){
-    Nan::ThrowError("felica has not been initialized");
-    return info.GetReturnValue().SetUndefined();
-  }
-  
-#if defined HAVE_LIBPAFE
-  int ret = felica_search_service(_felica);
-#elif defined HAVE_FELICALIB
-  int ret = 0;  
-  //felica_enum_service(_felica, idm);
-#endif
-  if(ret == 0){
-    info.GetReturnValue().Set(Nan::New(ret));
-  }else{
-    Nan::ThrowTypeError("internal error on getIDm");
-    return info.GetReturnValue().SetUndefined();
-  }
 }
 
 NAN_METHOD(Felica::FelicaGetIDm) {
@@ -370,19 +342,19 @@ NAN_METHOD(Felica::FelicaReadSingle) {
     Nan::ThrowTypeError("3rd argument must be blockaddr:integer");
     return info.GetReturnValue().SetUndefined();
   }else{
-    addr = info[2]->Int32Value();
+    addr = info[2]->Int32Value(Nan::GetCurrentContext()).ToChecked();
   }
   if (! info[1]->IsNumber()){
     Nan::ThrowTypeError("2nd argument must be mode:integer");
     return info.GetReturnValue().SetUndefined();
   }else{
-    mode = info[1]->Int32Value();
+    mode = info[1]->Int32Value(Nan::GetCurrentContext()).ToChecked();
   }
   if (! info[0]->IsNumber()){
     Nan::ThrowTypeError("1st argument must be servicecode:number");
     return info.GetReturnValue().SetUndefined();
   }else{
-    servicecode = info[0]->Int32Value();
+    servicecode = info[0]->Int32Value(Nan::GetCurrentContext()).ToChecked();
   }
 
   Felica* felicaObject = ObjectWrap::Unwrap<Felica>(info.This());
@@ -433,19 +405,19 @@ NAN_METHOD(Felica::FelicaWriteSingle) {
     Nan::ThrowTypeError("3rd argument must be blockaddr:integer");
     return info.GetReturnValue().SetUndefined();
   }else{
-    addr = info[2]->Int32Value();
+    addr = info[2]->Int32Value(Nan::GetCurrentContext()).ToChecked();
   }
   if (! info[1]->IsNumber()){
     Nan::ThrowTypeError("2nd argument must be mode:integer");
     return info.GetReturnValue().SetUndefined();
   }else{
-    mode = info[1]->Int32Value();
+    mode = info[1]->Int32Value(Nan::GetCurrentContext()).ToChecked();
   }
   if (! info[0]->IsNumber()){
     Nan::ThrowTypeError("1st argument must be servicecode:number");
     return info.GetReturnValue().SetUndefined();
   }else{
-    servicecode = info[0]->Int32Value();
+    servicecode = info[0]->Int32Value(Nan::GetCurrentContext()).ToChecked();
   }
 
   Felica* felicaObject = ObjectWrap::Unwrap<Felica>(info.This());
