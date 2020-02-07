@@ -292,9 +292,11 @@ NAN_METHOD(Felica::FelicaGetIDm) {
   felica_getidm(_felica, idm);
 #endif
   if(ret == 0){
-    sprintf(idmstr, "%02X%02X%02X%02X%02X%02X%02X%02X",
-	    idm[0], idm[1], idm[2], idm[3], idm[4], idm[5], idm[6], idm[7]);
-    info.GetReturnValue().Set(Nan::New(idmstr).ToLocalChecked());
+    v8::Local<v8::Array> arr = Nan::New<v8::Array>(8);
+    for(int i = 0; i < 8; i++){
+      Nan::Set(arrInBlock, i, Nan::New(idm[i]));
+    }
+    info.GetReturnValue().Set(arr);
   }else{
     Nan::ThrowTypeError("internal error on getIDm");
     return info.GetReturnValue().SetUndefined();
@@ -319,9 +321,11 @@ NAN_METHOD(Felica::FelicaGetPMm) {
   felica_getpmm(_felica, pmm);
 #endif
   if(ret == 0){//success
-    sprintf(pmmstr, "%02X%02X%02X%02X%02X%02X%02X%02X",
-	    pmm[0], pmm[1], pmm[2], pmm[3], pmm[4], pmm[5], pmm[6], pmm[7]);
-    info.GetReturnValue().Set(Nan::New(pmmstr).ToLocalChecked());
+    v8::Local<v8::Array> arr = Nan::New<v8::Array>(8);
+    for(int i = 0; i < 8; i++){
+      Nan::Set(arrInBlock, i, Nan::New(pmm[i]));
+    }
+    info.GetReturnValue().Set(arr);
   }else{
     Nan::ThrowTypeError("internal error on getPMm");
     return info.GetReturnValue().SetUndefined();
