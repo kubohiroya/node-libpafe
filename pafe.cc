@@ -296,7 +296,7 @@ NAN_METHOD(Felica::FelicaGetIDm) {
     for(int i = 0; i < 8; i++){
       Nan::Set(arr, i, Nan::New(idm[i]));
     }
-    info.GetReturnValue().Set(arr);
+    return info.GetReturnValue().Set(arr);
   }else{
     Nan::ThrowTypeError("internal error on getIDm");
     return info.GetReturnValue().SetUndefined();
@@ -325,7 +325,7 @@ NAN_METHOD(Felica::FelicaGetPMm) {
     for(int i = 0; i < 8; i++){
       Nan::Set(arr, i, Nan::New(pmm[i]));
     }
-    info.GetReturnValue().Set(arr);
+    return info.GetReturnValue().Set(arr);
   }else{
     Nan::ThrowTypeError("internal error on getPMm");
     return info.GetReturnValue().SetUndefined();
