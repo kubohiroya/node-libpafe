@@ -434,9 +434,9 @@ NAN_METHOD(Felica::FelicaWriteSingle) {
 #endif
 
   if(ret == 0){
-    info.GetReturnValue().SetUndefined();
+    return info.GetReturnValue().SetUndefined();
   }else{
-    return Nan::ThrowError("felica read error");
+    Nan::ThrowError("felica write error");
     return info.GetReturnValue().SetUndefined();
   }
 }

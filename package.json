@@ -38,5 +38,5 @@
   "scripts": {
     "install": "node-gyp rebuild"
   },
-  "version": "0.4.1"
+  "version": "0.5.0"
 }
