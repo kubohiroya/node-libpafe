@@ -294,7 +294,7 @@ NAN_METHOD(Felica::FelicaGetIDm) {
   if(ret == 0){
     v8::Local<v8::Array> arr = Nan::New<v8::Array>(8);
     for(int i = 0; i < 8; i++){
-      Nan::Set(arrInBlock, i, Nan::New(idm[i]));
+      Nan::Set(arr, i, Nan::New(idm[i]));
     }
     info.GetReturnValue().Set(arr);
   }else{
@@ -323,7 +323,7 @@ NAN_METHOD(Felica::FelicaGetPMm) {
   if(ret == 0){//success
     v8::Local<v8::Array> arr = Nan::New<v8::Array>(8);
     for(int i = 0; i < 8; i++){
-      Nan::Set(arrInBlock, i, Nan::New(pmm[i]));
+      Nan::Set(arr, i, Nan::New(pmm[i]));
     }
     info.GetReturnValue().Set(arr);
   }else{
