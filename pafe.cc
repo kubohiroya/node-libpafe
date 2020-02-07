@@ -450,7 +450,7 @@ NAN_METHOD(Felica::FelicaReadMulti) {
   uint8 servicecode[4];
   uint8 mode[4];
   uint8 addr[4];
-  uint8 data[FELICA_DATA_LEN*2];
+  uint8 data[FELICA_DATA_LEN*4];
 
   if (info.Length() < 1 || 4 < info.Length()){
     Nan::ThrowTypeError("FelicaReadMulti: Wrong number of arguments");
