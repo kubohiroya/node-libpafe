@@ -460,7 +460,7 @@ NAN_METHOD(Felica::FelicaReadMulti) {
     n = info[0]->Int32Value(Nan::GetCurrentContext()).ToChecked();
   }
   
-  if (! info[1]->IsArray()){
+  if (! info[1]->IsArrayBuffer()){
     Nan::ThrowTypeError("FelicaReadMulti: 2nd argument must be servicecode:number[]");
     return info.GetReturnValue().SetUndefined();
   }else{
@@ -470,7 +470,7 @@ NAN_METHOD(Felica::FelicaReadMulti) {
     }
   }
   
-  if (! info[2]->IsArray()){
+  if (! info[2]->IsArrayBuffer()){
     Nan::ThrowTypeError("FelicaReadMulti: 3rd argument must be mode:number[]");
     return info.GetReturnValue().SetUndefined();
   }else{
@@ -480,7 +480,7 @@ NAN_METHOD(Felica::FelicaReadMulti) {
     }
   }
   
-  if (! info[3]->IsArray()){
+  if (! info[3]->IsArrayBuffer()){
     Nan::ThrowTypeError("FelicaReadMulti: 4th argument must be addr:number");
     return info.GetReturnValue().SetUndefined();
   }else{
@@ -544,7 +544,7 @@ NAN_METHOD(Felica::FelicaWriteMulti) {
     n = info[0]->Int32Value(Nan::GetCurrentContext()).ToChecked();
   }
   
-  if (! info[1]->IsArray()){
+  if (! info[1]->IsArrayBuffer()){
     Nan::ThrowTypeError("FelicaWriteMulti: 2nd argument must be servicecode:number[]");
     return info.GetReturnValue().SetUndefined();
   }else{
@@ -554,7 +554,7 @@ NAN_METHOD(Felica::FelicaWriteMulti) {
     }
   }
   
-  if (! info[2]->IsArray()){
+  if (! info[2]->IsArrayBuffer()){
     Nan::ThrowTypeError("FelicaWriteMulti: 3rd argument must be mode:number[]");
     return info.GetReturnValue().SetUndefined();
   }else{
@@ -564,7 +564,7 @@ NAN_METHOD(Felica::FelicaWriteMulti) {
     }
   }
   
-  if (! info[3]->IsArray()){
+  if (! info[3]->IsArrayBuffer()){
     Nan::ThrowTypeError("FelicaWriteMulti: 4th argument must be addr:number");
     return info.GetReturnValue().SetUndefined();
   }else{
