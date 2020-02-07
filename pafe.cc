@@ -215,9 +215,9 @@ NAN_MODULE_INIT(Felica::Init) {
   Nan::SetPrototypeMethod(tpl, "getIDm", FelicaGetIDm);
   Nan::SetPrototypeMethod(tpl, "getPMm", FelicaGetPMm);
   Nan::SetPrototypeMethod(tpl, "readSingle", FelicaReadSingle);
-  //Nan::SetPrototypeMethod(tpl, "read", FelicaRead);
+  Nan::SetPrototypeMethod(tpl, "readMulti", FelicaReadMulti);
   Nan::SetPrototypeMethod(tpl, "writeSingle", FelicaWriteSingle);
-  //Nan::SetPrototypeMethod(tpl, "write", FelicaWrite);
+  Nan::SetPrototypeMethod(tpl, "writeMulti", FelicaWriteMulti);
 
  constructor.Reset(Nan::GetFunction(tpl).ToLocalChecked());
   Nan::Set(target, Nan::New("Felica").ToLocalChecked(), Nan::GetFunction(tpl).ToLocalChecked());
@@ -429,6 +429,162 @@ NAN_METHOD(Felica::FelicaWriteSingle) {
 
 #if defined HAVE_LIBPAFE
   int ret = felica_write_single(_felica, servicecode, mode, addr, data);
+#elif defined HAVE_FELICALIB
+  int ret = felica_write_without_encryption02(_felica, servicecode, mode, addr, data);
+#endif
+
+  if(ret == 0){
+    return info.GetReturnValue().SetUndefined();
+  }else{
+    Nan::ThrowError("felica write error");
+    return info.GetReturnValue().SetUndefined();
+  }
+}
+
+NAN_METHOD(Felica::FelicaReadMulti) {
+  int n;
+  int servicecode[4];
+  int mode[4];
+  uint8 addr[4];
+  uint8 data[FELICA_DATA_LEN];
+
+  if (info.Length() < 1 || 5 < info.Length()){
+    Nan::ThrowTypeError("Wrong number of arguments");
+    return info.GetReturnValue().SetUndefined();
+  }
+ 
+  if (! info[0]->IsNumber()){
+    Nan::ThrowTypeError("1st argument must be n:number");
+    return info.GetReturnValue().SetUndefined();
+  }else{
+    n = info[0]->Int32Value(Nan::GetCurrentContext()).ToChecked();
+  }
+  if (! info[1]->IsArray()){
+    Nan::ThrowTypeError("2nd argument must be servicecode:number[]");
+    return info.GetReturnValue().SetUndefined();
+  }else{
+    v8::Local<v8::Array> arr = info[1].As<v8::Array>();
+    for(int i = 0; i < n; i++){
+      servicecode[i] = Nan::To<v8::Uint32>(arr->Get(i)).ToLocalChecked()->Value();
+    }
+  }
+  if (! info[2]->IsArray()){
+    Nan::ThrowTypeError("3rd argument must be mode:number[]");
+    return info.GetReturnValue().SetUndefined();
+  }else{
+    v8::Local<v8::Array> arr = info[2].As<v8::Array>();
+    for(int i = 0; i < n; i++){
+      mode[i] = Nan::To<v8::Uint32>(arr->Get(i)).ToLocalChecked()->Value();
+    }
+  }
+  if (! info[3]->IsArray()){
+    Nan::ThrowTypeError("4th argument must be addr:number");
+    return info.GetReturnValue().SetUndefined();
+  }else{
+    v8::Local<v8::Array> arr = info[3].As<v8::Array>();
+    for(int i = 0; i < n; i++){
+      addr[i] = Nan::To<v8::Uint32>(arr->Get(i)).ToLocalChecked()->Value();
+    }
+  }
+  if (! info[4]->IsArray()){
+    Nan::ThrowError("5th option must be Array type");
+    return info.GetReturnValue().SetUndefined();
+  }else{
+    v8::Local<v8::Array> arr = info[4].As<v8::Array>();
+    for(int i = 0; i < FELICA_DATA_LEN * n; i++){
+      data[i] = Nan::To<v8::Uint32>(arr->Get(i)).ToLocalChecked()->Value();
+    }
+  }
+
+  Felica* felicaObject = ObjectWrap::Unwrap<Felica>(info.This());
+  felica* _felica = felicaObject->_felica;
+  if(_felica == NULL){
+    Nan::ThrowError("felica has not been initialized");
+    return info.GetReturnValue().SetUndefined();
+  }
+
+#if defined HAVE_LIBPAFE
+  int ret = felica_read_multi(_felica, n, servicecode, mode, addr, data);
+#elif defined HAVE_FELICALIB
+  int ret = felica_read_without_encryption02(_felica, servicecode, mode, addr, data);
+#endif
+
+  if(ret == 0){
+    v8::Local<v8::Array> arr = Nan::New<v8::Array>(FELICA_DATA_LEN);
+    for(int i = 0; i < FELICA_DATA_LEN; i++){
+      Nan::Set(arr, i, Nan::New(data[i]));
+    }
+    info.GetReturnValue().Set(arr);
+  }else{
+    Nan::ThrowError("felica read error");
+    return info.GetReturnValue().SetUndefined();
+  }
+}
+
+NAN_METHOD(Felica::FelicaWriteMulti) {
+  int n;
+  int servicecode[2];
+  int mode[2];
+  uint8 addr[2];
+  uint8 data[FELICA_DATA_LEN];
+
+  if (info.Length() < 1 || 5 < info.Length()){
+    Nan::ThrowTypeError("Wrong number of arguments");
+    return info.GetReturnValue().SetUndefined();
+  }
+ 
+  if (! info[0]->IsNumber()){
+    Nan::ThrowTypeError("1st argument must be n:number");
+    return info.GetReturnValue().SetUndefined();
+  }else{
+    n = info[0]->Int32Value(Nan::GetCurrentContext()).ToChecked();
+  }
+  if (! info[1]->IsArray()){
+    Nan::ThrowTypeError("2nd argument must be servicecode:number[]");
+    return info.GetReturnValue().SetUndefined();
+  }else{
+    v8::Local<v8::Array> arr = info[1].As<v8::Array>();
+    for(int i = 0; i < n; i++){
+      servicecode[i] = Nan::To<v8::Uint32>(arr->Get(i)).ToLocalChecked()->Value();
+    }
+  }
+  if (! info[2]->IsArray()){
+    Nan::ThrowTypeError("3rd argument must be mode:number[]");
+    return info.GetReturnValue().SetUndefined();
+  }else{
+    v8::Local<v8::Array> arr = info[2].As<v8::Array>();
+    for(int i = 0; i < n; i++){
+      mode[i] = Nan::To<v8::Uint32>(arr->Get(i)).ToLocalChecked()->Value();
+    }
+  }
+  if (! info[3]->IsArray()){
+    Nan::ThrowTypeError("4th argument must be addr:number");
+    return info.GetReturnValue().SetUndefined();
+  }else{
+    v8::Local<v8::Array> arr = info[3].As<v8::Array>();
+    for(int i = 0; i < n; i++){
+      addr[i] = Nan::To<v8::Uint32>(arr->Get(i)).ToLocalChecked()->Value();
+    }
+  }
+  if (! info[4]->IsArray()){
+    Nan::ThrowError("5th option must be Array type");
+    return info.GetReturnValue().SetUndefined();
+  }else{
+    v8::Local<v8::Array> arr = info[4].As<v8::Array>();
+    for(int i = 0; i < FELICA_DATA_LEN * n; i++){
+      data[i] = Nan::To<v8::Uint32>(arr->Get(i)).ToLocalChecked()->Value();
+    }
+  }
+
+  Felica* felicaObject = ObjectWrap::Unwrap<Felica>(info.This());
+  felica* _felica = felicaObject->_felica;
+  if(_felica == NULL){
+    Nan::ThrowError("felica has not been initialized");
+    return;
+  }
+
+#if defined HAVE_LIBPAFE
+  int ret = felica_write_multi(_felica, n, servicecode, mode, addr, data);
 #elif defined HAVE_FELICALIB
   int ret = felica_write_without_encryption02(_felica, servicecode, mode, addr, data);
 #endif
