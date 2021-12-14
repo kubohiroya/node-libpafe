@@ -424,7 +424,7 @@ NAN_METHOD(Felica::FelicaWriteSingle) {
   }else{
     v8::Local<v8::Array> arr = info[3].As<v8::Array>();
     for(int i = 0; i < FELICA_DATA_LEN; i++){
-      data[i] = Nan::To<v8::Uint32>(arr->Get(i)).ToLocalChecked()->Value();
+      data[i] = Nan::To<v8::Uint32>(arr->GetInternalField(i)).ToLocalChecked()->Value();
     }
   }
 
@@ -474,7 +474,7 @@ NAN_METHOD(Felica::FelicaReadMulti) {
   }else{
     v8::Local<v8::Array> arr = info[1].As<v8::Array>();
     for(int i = 0; i < n; i++){
-      servicecode[i] = Nan::To<v8::Uint32>(arr->Get(i)).ToLocalChecked()->Value();
+      servicecode[i] = Nan::To<v8::Uint32>(arr->GetInternalField(i)).ToLocalChecked()->Value();
     }
   }
      
@@ -484,7 +484,7 @@ NAN_METHOD(Felica::FelicaReadMulti) {
   }else{
     v8::Local<v8::Array> arr = info[2].As<v8::Array>();
     for(int i = 0; i < n; i++){
-      mode[i] = Nan::To<v8::Uint32>(arr->Get(i)).ToLocalChecked()->Value();
+      mode[i] = Nan::To<v8::Uint32>(arr->GetInternalField(i)).ToLocalChecked()->Value();
     }
   }
   
@@ -494,7 +494,7 @@ NAN_METHOD(Felica::FelicaReadMulti) {
   }else{
     v8::Local<v8::Array> arr = info[3].As<v8::Array>();
     for(int i = 0; i < n; i++){
-      addr[i] = Nan::To<v8::Uint32>(arr->Get(i)).ToLocalChecked()->Value();
+      addr[i] = Nan::To<v8::Uint32>(arr->GetInternalField(i)).ToLocalChecked()->Value();
     }
   }
 
@@ -553,7 +553,7 @@ NAN_METHOD(Felica::FelicaWriteMulti) {
   }else{
     v8::Local<v8::Array> arr = info[1].As<v8::Array>();
     for(int i = 0; i < n; i++){
-      servicecode[i] = Nan::To<v8::Uint32>(arr->Get(i)).ToLocalChecked()->Value();
+      servicecode[i] = Nan::To<v8::Uint32>(arr->GetInternalField(i)).ToLocalChecked()->Value();
     }
   }
   
@@ -563,7 +563,7 @@ NAN_METHOD(Felica::FelicaWriteMulti) {
   }else{
     v8::Local<v8::Array> arr = info[2].As<v8::Array>();
     for(int i = 0; i < n; i++){
-      mode[i] = Nan::To<v8::Uint32>(arr->Get(i)).ToLocalChecked()->Value();
+      mode[i] = Nan::To<v8::Uint32>(arr->GetInternalField(i)).ToLocalChecked()->Value();
     }
   }
 
@@ -573,7 +573,7 @@ NAN_METHOD(Felica::FelicaWriteMulti) {
   }else{
     v8::Local<v8::Array> arr = info[3].As<v8::Array>();
     for(int i = 0; i < n; i++){
-      addr[i] = Nan::To<v8::Uint32>(arr->Get(i)).ToLocalChecked()->Value();
+      addr[i] = Nan::To<v8::Uint32>(arr->GetInternalField(i)).ToLocalChecked()->Value();
     }
   }
 
@@ -583,7 +583,7 @@ NAN_METHOD(Felica::FelicaWriteMulti) {
   }else{
     v8::Local<v8::Array> arr = info[4].As<v8::Array>();
     for(int i = 0; i < FELICA_DATA_LEN * n; i++){
-      data[i] = Nan::To<v8::Uint32>(arr->Get(i)).ToLocalChecked()->Value();
+      data[i] = Nan::To<v8::Uint32>(arr->GetInternalField(i)).ToLocalChecked()->Value();
     }
   }
   

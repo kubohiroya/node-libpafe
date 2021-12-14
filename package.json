@@ -9,7 +9,7 @@
   "dependencies": {},
   "description": "a Node.js addon to access FeliCa using SONY PaSoRi(RC-S310,RC-S320,RC-S330)",
   "devDependencies": {
-    "nan": "^2.13.2",
+    "nan": "^2.15.0",
     "node-gyp": "^4.0.0"
   },
   "engines": {
